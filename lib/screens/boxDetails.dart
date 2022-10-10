@@ -174,12 +174,11 @@ class _BoxDetailsPageState extends State<BoxDetailsPage> {
       onWillPop: (){
         //on Back button press, you can use WillPopScope for another purpose also.
         // Navigator.pop(context); //return data along with pop
-        Navigator.of(context)
-            .pushReplacement(new MaterialPageRoute(builder: (context) => DashPage(onPressed: rebuildPage)));
+        Navigator.pop(context);
         return new Future(() => false); //onWillPop is Future<bool> so return false
       },
       child: Scaffold(
-        resizeToAvoidBottomPadding: false,
+        resizeToAvoidBottomInset: false,
         backgroundColor: appBgColor,
         key: _scaffoldKey,
         appBar:   PreferredSize(
@@ -192,8 +191,7 @@ class _BoxDetailsPageState extends State<BoxDetailsPage> {
                 icon:  Image.asset(
                 "assets/back.png",width: 25,height: 25,),
                 onPressed: () {
-                  Navigator.of(context)
-                      .pushReplacement(new MaterialPageRoute(builder: (context) => DashPage(onPressed: rebuildPage)));
+                  Navigator.of(context).pop("success");
                 },
               ),
             ),
@@ -291,7 +289,13 @@ class _BoxDetailsPageState extends State<BoxDetailsPage> {
                                               String custShortCode = getBoxDetailsDataList[index]["CustShortCode"].toString();
                                               String boxCount = widget.boxCount;
 
-                                              Navigator.push(context, SlideLeftRoute(page: BoxRouteDetailsPage(exportType_value:exportType_value, exportType:exportType, boxNo_Value:boxNo_Value, boxNo:boxNo, invoiceNo:invoiceNo, custShortCode:custShortCode, boxCount:boxCount)));
+                                              Navigator.push(context, SlideLeftRoute(page: BoxRouteDetailsPage(exportType_value:exportType_value, exportType:exportType, boxNo_Value:boxNo_Value, boxNo:boxNo, invoiceNo:invoiceNo, custShortCode:custShortCode, boxCount:boxCount))).then((value){
+                                                if(value == "success"){
+                                                  check();
+                                                  _resultGetBoxDetailsData =  getBoxDetails();
+                                                  _scrollController = ScrollController();
+                                                }
+                                              });
                                             }
                                           }
                                         },
@@ -352,30 +356,32 @@ class _BoxDetailsPageState extends State<BoxDetailsPage> {
                                                   ],
                                                 ),
 
-                                                trailing:  Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    Image.asset(
-                                                      "assets/verticalLine.png",width: 20,height: 45,
-                                                    ),
-                                                    if(getBoxDetailsDataList[index]["RoutePerc"] == 100)
+                                                trailing:  FittedBox(
+                                                  child: Row(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
                                                       Image.asset(
-                                                        "assets/100.png",width: 40,height: 40,
+                                                        "assets/verticalLine.png",width: 20,height: 45,
                                                       ),
-                                                    if(getBoxDetailsDataList[index]["RoutePerc"] != 100)
-                                                      CircularPercentIndicator(
-                                                        radius: 45,
-                                                        lineWidth: 2,
-                                                        animation: true,
-                                                        percent: percentage,
-                                                        center:  Image.asset(
-                                                          "assets/0.png",width: 25,height: 25,
+                                                      if(getBoxDetailsDataList[index]["RoutePerc"] == 100)
+                                                        Image.asset(
+                                                          "assets/100.png",width: 40,height: 40,
                                                         ),
-                                                        backgroundColor: Colors.grey[300],
-                                                        circularStrokeCap: CircularStrokeCap.round,
-                                                        progressColor: appBtnColor,
-                                                      )
-                                                  ],
+                                                      if(getBoxDetailsDataList[index]["RoutePerc"] != 100)
+                                                        CircularPercentIndicator(
+                                                          radius: 45,
+                                                          lineWidth: 3,
+                                                          animation: true,
+                                                          percent: percentage,
+                                                          center:  Image.asset(
+                                                            "assets/0.png",width: 25,height: 15,
+                                                          ),
+                                                          backgroundColor: Colors.grey[300],
+                                                          circularStrokeCap: CircularStrokeCap.round,
+                                                          progressColor: appBtnColor,
+                                                        )
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ],

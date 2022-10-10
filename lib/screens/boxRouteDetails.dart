@@ -337,7 +337,7 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
                 decimal: true,
               ),
               inputFormatters: <TextInputFormatter>[
-                WhitelistingTextInputFormatter.digitsOnly
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
               ],
               decoration: InputDecoration(
                 fillColor: appBgColor, filled: true,
@@ -630,7 +630,7 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
       },
       child: Scaffold(
         key: _scaffoldKey,
-        resizeToAvoidBottomPadding: false,
+        resizeToAvoidBottomInset: false,
         backgroundColor: appBgColor,
         appBar:   PreferredSize(
           preferredSize: Size(double.infinity, 95),
@@ -642,8 +642,7 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
                 icon:  Image.asset(
                   "assets/back.png",width: 25,height: 25,),
                 onPressed: () {
-                  Navigator.of(context)
-                      .pushReplacement(new MaterialPageRoute(builder: (context) => BoxDetailsPage(onPressed: rebuildPage, exportType_value: widget.exportType_value, exportType : widget.exportType, boxCount: widget.boxCount)));
+                  Navigator.of(context).pop("success");
                 },
               ),
             ),

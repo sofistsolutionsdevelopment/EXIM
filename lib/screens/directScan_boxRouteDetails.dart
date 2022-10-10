@@ -335,7 +335,7 @@ class _DirectScan_BoxRouteDetailsPageState extends State<DirectScan_BoxRouteDeta
                 decimal: true,
               ),
               inputFormatters: <TextInputFormatter>[
-                WhitelistingTextInputFormatter.digitsOnly
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
               ],
               decoration: InputDecoration(
                 fillColor: appBgColor, filled: true,
@@ -622,7 +622,7 @@ class _DirectScan_BoxRouteDetailsPageState extends State<DirectScan_BoxRouteDeta
       },
       child: Scaffold(
         key: _scaffoldKey,
-        resizeToAvoidBottomPadding: false,
+        resizeToAvoidBottomInset: false,
         backgroundColor: appBgColor,
         appBar:   PreferredSize(
           preferredSize: Size(double.infinity, 95),

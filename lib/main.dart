@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:connectivity/connectivity.dart';
 import 'package:exim/screens/dash.dart';
 import 'package:exim/screens/login.dart';
 import 'package:exim/screens/noInternet.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,7 +15,7 @@ void main() async {
   WidgetsFlutterBinding().ensureVisualUpdate();
   WidgetsFlutterBinding.ensureInitialized();
 
-
+  
   Widget _defaultPage = LoginPage();
 
   Future<int> _checkIfLoggedIn() async {
@@ -55,7 +59,10 @@ void main() async {
     _defaultPage = NoInternetPage();
   }
 
-  return runApp(
+  await runZonedGuarded(()async{
+  await Firebase.initializeApp();
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+  runApp(
     MaterialApp(
       home: _defaultPage,
       title: 'EXIM',
@@ -63,5 +70,13 @@ void main() async {
       theme: ThemeData(primarySwatch: Colors.blue),
     ),
   );
+
+  }, (error,stackTrace){
+    print(error);
+    FirebaseCrashlytics.instance.recordError(error, stackTrace,fatal: true);
+  });
+  
+
+  
 }
 

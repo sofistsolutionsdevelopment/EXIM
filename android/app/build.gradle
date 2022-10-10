@@ -34,7 +34,7 @@ if (keystorePropertiesFile.exists()) {
 
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 31
 
     ndkVersion "23.1.7779620"
     build
@@ -76,8 +76,13 @@ android {
 
 flutter {
     source '../..'
+    
 }
 
 dependencies {
+    implementation platform('com.google.firebase:firebase-bom:30.0.0')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-crashlytics'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "com.android.support:support-v4:27.0.0"
 }
