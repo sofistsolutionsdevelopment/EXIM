@@ -30,7 +30,7 @@ dependencies:
   cupertino_icons: any
   imei_plugin: any
   email_validator: any
-  firebase_messaging: any
+  firebase_messaging: ^11.3.0
   http: any
   shared_preferences: any
   intl_phone_field: any
@@ -46,11 +46,14 @@ dependencies:
   swipe_to: any
   percent_indicator: any
   permission_handler: any
-  toast: any
+  toast: ^0.1.5
   liquid_pull_to_refresh: any
   pull_to_refresh: any
-  flutter_slidable: any
+  flutter_slidable: ^0.6.0
   timeline_tile: any
+  firebase_crashlytics: ^2.7.2
+  firebase_core: ^1.16.0
+  argon_buttons_flutter: ^1.1.0
 
 dev_dependencies:
   flutter_test:

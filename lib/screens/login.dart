@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
   String _contactNo;
   String _password;
 
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  // final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   String tokenValue = '';
   String _platformImei = '';
   String uniqueId = "";
@@ -45,10 +45,10 @@ class _LoginPageState extends State<LoginPage> {
   //LoginResultModel _result;
 
   _registerOnFirebase() {
-    _firebaseMessaging.subscribeToTopic('all');
-    _firebaseMessaging.getToken().then((token)
+    // _firebaseMessaging.subscribeToTopic('all');
+    FirebaseMessaging.instance.getToken().then((token)
     {
-      //=>    print(token)
+          debugPrint("token is ======="+token);
       if (token != null)
       {
         update(token);
@@ -279,6 +279,7 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     check();
     super.initState();
+    
   }
 
 
@@ -398,7 +399,7 @@ class _LoginPageState extends State<LoginPage> {
                                                       decimal: true,
                                                     ),
                                                     inputFormatters: <TextInputFormatter>[
-                                                      WhitelistingTextInputFormatter.digitsOnly
+                                                      FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                                                     ],
                                                     decoration: InputDecoration(
                                                       counterText: "",
@@ -486,7 +487,10 @@ class _LoginPageState extends State<LoginPage> {
                                   debugPrint('devideId : ${devideId}' );
                                   debugPrint('token : ${token}' );
 
-                                  String API_Path = "http://mindtechsolutions.com/tester/EximApiDev/API";
+                                  String API_Path = "http://mindtechsolutions.com/tester/EximApi/API";
+
+                                  // String API_Path = "http://mindtechsolutions.com/tester/EximApiDev/API";
+
 
                                   SharedPreferences prefs = await SharedPreferences.getInstance();
                                   prefs.setString('API_Path', API_Path);
@@ -526,7 +530,7 @@ class _LoginPageState extends State<LoginPage> {
                                       setState(() {
                                         _isInAsyncCall = false;
                                       });
-                                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => VerifyOtp()));
+                                      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => VerifyOtp(contactNo: contactNo,devideId: devideId,deviceName: deviceName,mac: mac,imei: imei,token: token,)));
                                     }
                                     if(Status == "0"){
                                       debugPrint('_displaySnackBarExe **');

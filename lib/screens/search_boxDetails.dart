@@ -177,7 +177,7 @@ class _Search_BoxDetailsPageState extends State<Search_BoxDetailsPage> {
         return new Future(() => false); //onWillPop is Future<bool> so return false
       },
       child: Scaffold(
-        resizeToAvoidBottomPadding: false,
+        resizeToAvoidBottomInset: false,
         backgroundColor: appBgColor,
         key: _scaffoldKey,
         appBar:   PreferredSize(
@@ -190,8 +190,7 @@ class _Search_BoxDetailsPageState extends State<Search_BoxDetailsPage> {
                 icon:  Image.asset(
                 "assets/back.png",width: 25,height: 25,),
                 onPressed: () {
-                  Navigator.of(context)
-                      .pushReplacement(new MaterialPageRoute(builder: (context) => DashPage(onPressed: rebuildPage)));
+                  Navigator.of(context).pop("success");
                 },
               ),
             ),
@@ -380,30 +379,32 @@ class _Search_BoxDetailsPageState extends State<Search_BoxDetailsPage> {
                                                   ],
                                                 ),
 
-                                                trailing:  Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    Image.asset(
-                                                      "assets/verticalLine.png",width: 20,height: 45,
-                                                    ),
-                                                    if(getBoxDetailsDataList[index]["RoutePerc"] == 100)
+                                                trailing:  FittedBox(
+                                                  child: Row(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
                                                       Image.asset(
-                                                        "assets/100.png",width: 40,height: 40,
+                                                        "assets/verticalLine.png",width: 20,height: 45,
                                                       ),
-                                                    if(getBoxDetailsDataList[index]["RoutePerc"] != 100)
-                                                      CircularPercentIndicator(
-                                                        radius: 45,
-                                                        lineWidth: 2,
-                                                        animation: true,
-                                                        percent: percentage,
-                                                        center:  Image.asset(
-                                                          "assets/0.png",width: 25,height: 25,
+                                                      if(getBoxDetailsDataList[index]["RoutePerc"] == 100)
+                                                        Image.asset(
+                                                          "assets/100.png",width: 40,height: 40,
                                                         ),
-                                                        backgroundColor: Colors.grey[300],
-                                                        circularStrokeCap: CircularStrokeCap.round,
-                                                        progressColor: appBtnColor,
-                                                      )
-                                                  ],
+                                                      if(getBoxDetailsDataList[index]["RoutePerc"] != 100)
+                                                        CircularPercentIndicator(
+                                                          radius: 45,
+                                                          lineWidth: 2,
+                                                          animation: true,
+                                                          percent: percentage,
+                                                          center:  Image.asset(
+                                                            "assets/0.png",width: 25,height: 25,
+                                                          ),
+                                                          backgroundColor: Colors.grey[300],
+                                                          circularStrokeCap: CircularStrokeCap.round,
+                                                          progressColor: appBtnColor,
+                                                        )
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ],
