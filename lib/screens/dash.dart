@@ -418,6 +418,136 @@ class _DashPageState extends State<DashPage> {
       );
   }
 
+  Widget tab3() {
+    return FutureBuilder(
+          future: _resultGetExportTypeWiseBoxesData,
+          builder: (context, snapshot)
+          {
+            if (snapshot.hasData)
+            {
+              return  Center(
+                child: ListView.builder(
+                  itemCount: getExportTypeWiseBoxesDataList.length,
+                  itemBuilder: (context, index) {
+                    if(getExportTypeWiseBoxesDataList[index]['isImport'] == 2){
+                      return Padding(
+                      padding: const EdgeInsets.only(right:3,left:3,top:3),
+                      child: InkWell(
+                        onTap: () async{
+                          var connectivityResult = await (Connectivity().checkConnectivity());
+                          if (connectivityResult == ConnectivityResult.none) {
+                            print("*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
+                            Navigator.push(context, SlideLeftRoute(page: NoInternetPage()));
+                          }
+                          else if (connectivityResult == ConnectivityResult.wifi || connectivityResult == ConnectivityResult.mobile) {
+                            print("*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
+                            String exportType_value = getExportTypeWiseBoxesDataList[index]["ExportType_value"].toString();
+                            String exportType = getExportTypeWiseBoxesDataList[index]["ExportType"].toString();
+                            String boxCount = getExportTypeWiseBoxesDataList[index]["BoxCount"].toString();
+
+                            Navigator.push(context, SlideLeftRoute(page: BoxDetailsPage(exportType_value:exportType_value, exportType:exportType, boxCount:boxCount))).then((value){
+                              if(value == "success"){
+                                check();
+                                _resultGetExportTypeWiseBoxesData =  getExportTypeWiseBoxes();
+                              }
+                            });
+                          }
+                        },
+                        child: Card(
+                          color: Colors.white,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top:1,bottom: 1),
+                            child: ListTile(
+                              leading:  Image.asset(
+                                "assets/normalExport.png",width: 40,height: 40,
+                              ),
+                              title: Text(getExportTypeWiseBoxesDataList[index]["ExportType"], style:TextStyle(fontSize: 16, fontWeight: FontWeight.bold,),),
+                              subtitle: Text("${getExportTypeWiseBoxesDataList[index]["BoxCount"].toString()} Boxes", style:TextStyle(fontSize: 14, fontWeight: FontWeight.bold,),),
+                              trailing:CircleAvatar(
+                                radius: 15,
+                                backgroundColor: routePageColor.withOpacity(0.7),
+                                child: IconButton(
+                                    iconSize: 18,
+                                    padding: const EdgeInsets.only(left:6,right: 8),
+                                    icon: const Icon(Icons.navigate_next,color: Color(0xFF383182),),
+                                    onPressed: () async {
+                                      var connectivityResult = await (Connectivity().checkConnectivity());
+                                      if (connectivityResult == ConnectivityResult.none) {
+                                        print("*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
+                                        Navigator.push(context, SlideLeftRoute(page: NoInternetPage()));
+                                      }
+                                      else if (connectivityResult == ConnectivityResult.wifi || connectivityResult == ConnectivityResult.mobile) {
+                                        print("*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
+                                        String exportType_value = getExportTypeWiseBoxesDataList[index]["ExportType_value"].toString();
+                                        String exportType = getExportTypeWiseBoxesDataList[index]["ExportType"].toString();
+                                        String boxCount = getExportTypeWiseBoxesDataList[index]["BoxCount"].toString();
+
+                                        Navigator.push(context, SlideLeftRoute(page: BoxDetailsPage(exportType_value:exportType_value, exportType:exportType, boxCount:boxCount))).then((value){
+                                          if(value == "success"){
+                                            check();
+                                            _resultGetExportTypeWiseBoxesData =  getExportTypeWiseBoxes();
+                                          }
+                                        });
+                                      }
+                                    }),
+                              ),
+                              /*
+                               Ink(width: 30,
+                                decoration:
+                                const ShapeDecoration(
+                                    shape: CircleBorder(),
+                                    color: Color(0xFFfef0ec)
+                                ),
+                                child: IconButton(
+                                  icon: const Icon(Icons.navigate_next),
+                                  iconSize: 20,
+                                  color: Color(0xFF383182),
+                                  onPressed: () {},
+                                ),
+                              )
+
+                              CircleAvatar(
+                                radius: 20,
+                                backgroundColor: routePageColor,
+                                child: IconButton(
+                                    iconSize: 20,
+                                    icon: const Icon(Icons.navigate_next,color: Color(0xFF383182),),
+                                    onPressed: () {
+                                      // do something
+                                    }),
+                              ),*/
+                             /* Image.asset(
+                                "assets/nextArrow.png",width: 30,height: 30,
+                              ),*/
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                 
+                    }else{
+                      return Container();
+                    }
+                  },
+                ),
+              );
+            }
+            else if (snapshot.hasError)
+            {
+              return Align(alignment: Alignment.center, child: Text(""));
+            }
+
+            return Center(child: SpinKitRotatingCircle(
+              color: appColor,
+              size: 30.0,
+            ));
+
+
+          }
+      );
+  }
+
+
   Widget child;
 
   Widget child1() {
@@ -471,7 +601,7 @@ class _DashPageState extends State<DashPage> {
         _resultGetExportTypeWiseBoxesData =  getExportTypeWiseBoxes();
       });
 
-      _scaffoldKey.currentState.showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Page Refreshed', style: TextStyle(
               fontFamily: "Poppins",
@@ -500,7 +630,7 @@ class _DashPageState extends State<DashPage> {
             child: Padding(
               padding: const EdgeInsets.only(top:30,right: 10, left: 10),
               child:DefaultTabController(
-                length: 2,
+                length: 3,
                 child: Scaffold(
                   key: _scaffoldKey,
                   resizeToAvoidBottomInset: false,
@@ -540,6 +670,16 @@ class _DashPageState extends State<DashPage> {
                               ),
                             ),
                           ),
+                          Tab(
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                "DTA",
+                                style: TextStyle(fontSize: 22,fontFamily: "AlternateGothic",
+                                    fontWeight: FontWeight.w500,letterSpacing: 1),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -551,6 +691,7 @@ class _DashPageState extends State<DashPage> {
                       if (getExportTypeWiseBoxesListLenght != 0)
                       tab1(),
                       tab2(),
+                      tab3(),
                     ],
                   ),
                 ),
@@ -605,7 +746,7 @@ class _DashPageState extends State<DashPage> {
             ),
             actions: <Widget>[
 
-              FlatButton(
+              TextButton(
                 // color: Color(0xFF4938B4),
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
@@ -615,7 +756,7 @@ class _DashPageState extends State<DashPage> {
                 onPressed: ()=> exit(0),
 
               ),
-              FlatButton(
+              TextButton(
                 // color: Color(0xffd47fa6),
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
@@ -653,7 +794,7 @@ class _DashPageState extends State<DashPage> {
 
       final response = await http.post(
         Uri.parse(apiUrl),
-        headers: {HttpHeaders.ACCEPT: 'application/json', HttpHeaders.contentTypeHeader: 'application/json', 'x-access-token': _Token},
+        headers: {HttpHeaders.acceptHeader: 'application/json', HttpHeaders.contentTypeHeader: 'application/json', 'x-access-token': _Token},
         body: json.encode(
             {
               "BoxQRCode": qrCodeResult,
@@ -694,14 +835,14 @@ class _DashPageState extends State<DashPage> {
   _displaySnackBar(BuildContext context) {
     final snackBar = SnackBar(content: Text('Invalid Box', style: TextStyle(fontSize: 18,fontFamily: "Poppins",
         fontWeight: FontWeight.w500),));
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
   _displaySnackBarExe(BuildContext context, String exe) {
     final snackBar = SnackBar(
         content: Text(exe, style: TextStyle(fontSize: 18,fontFamily: "Poppins",
             fontWeight: FontWeight.w500),
         ));
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
 

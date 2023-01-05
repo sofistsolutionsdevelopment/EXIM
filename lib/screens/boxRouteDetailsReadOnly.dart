@@ -75,7 +75,7 @@ class _BoxRouteDetailsReadOnlyPageState extends State<BoxRouteDetailsReadOnlyPag
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: {
-          HttpHeaders.ACCEPT: 'application/json',
+          HttpHeaders.acceptHeader: 'application/json',
           HttpHeaders.contentTypeHeader: 'application/json',
           'x-access-token': _Token
         },
@@ -168,7 +168,7 @@ class _BoxRouteDetailsReadOnlyPageState extends State<BoxRouteDetailsReadOnlyPag
         check();
         _resultGetBoxRouteDetailsData = getBoxRouteDetails();
       });
-      _scaffoldKey.currentState.showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Page Refreshed', style: TextStyle(
               fontFamily: "Poppins",
@@ -201,7 +201,7 @@ class _BoxRouteDetailsReadOnlyPageState extends State<BoxRouteDetailsReadOnlyPag
   _displaySnackBarInputValue(BuildContext context) {
     final snackBar = SnackBar(
         content: Text('Enter AWB Number', style: TextStyle(fontSize: 18),));
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
 
@@ -229,7 +229,7 @@ class _BoxRouteDetailsReadOnlyPageState extends State<BoxRouteDetailsReadOnlyPag
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: {
-          HttpHeaders.ACCEPT: 'application/json',
+          HttpHeaders.acceptHeader: 'application/json',
           HttpHeaders.contentTypeHeader: 'application/json',
           'x-access-token': _Token
         },
@@ -296,7 +296,7 @@ class _BoxRouteDetailsReadOnlyPageState extends State<BoxRouteDetailsReadOnlyPag
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: {
-          HttpHeaders.ACCEPT: 'application/json',
+          HttpHeaders.acceptHeader: 'application/json',
           HttpHeaders.contentTypeHeader: 'application/json',
           'x-access-token': _Token
         },
@@ -386,11 +386,13 @@ class _BoxRouteDetailsReadOnlyPageState extends State<BoxRouteDetailsReadOnlyPag
             ),
             actions: <Widget>[
 
-              FlatButton(
-                color: Colors.red,
-                textColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
+              TextButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.red),
+                  textStyle: MaterialStateProperty.all(TextStyle(color: Colors.white,)),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),)
+                ), 
                 child: Text(
                   'CANCEL', style: TextStyle(fontFamily: "AlternateGothic",
                   fontWeight: FontWeight.w500,
@@ -403,16 +405,18 @@ class _BoxRouteDetailsReadOnlyPageState extends State<BoxRouteDetailsReadOnlyPag
                 },
               ),
               SizedBox(width: 40,),
-              FlatButton(
-                color: Colors.green,
-                textColor: Colors.white,
+              TextButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.green,),
+                  textStyle: MaterialStateProperty.all(TextStyle(color: Colors.white,)),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),)
+                ),
                 child: Text(
                   'SAVE', style: TextStyle(fontFamily: "AlternateGothic",
                   fontWeight: FontWeight.w500,
                   fontSize: 18,
                   letterSpacing: 1,),),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20)),
                 onPressed: () async {
                   if (_controllerInputValue.text == "") {
                     _controllerInputValue.clear();
@@ -507,7 +511,7 @@ class _BoxRouteDetailsReadOnlyPageState extends State<BoxRouteDetailsReadOnlyPag
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: {
-          HttpHeaders.ACCEPT: 'application/json',
+          HttpHeaders.acceptHeader: 'application/json',
           HttpHeaders.contentTypeHeader: 'application/json',
           'x-access-token': _Token
         },
@@ -557,7 +561,7 @@ class _BoxRouteDetailsReadOnlyPageState extends State<BoxRouteDetailsReadOnlyPag
     final snackBar = SnackBar(content: Text(
       'Invalid Box', style: TextStyle(fontSize: 18, fontFamily: "Poppins",
         fontWeight: FontWeight.w500),));
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   _displaySnackBarExe(BuildContext context, String exe) {
@@ -565,7 +569,7 @@ class _BoxRouteDetailsReadOnlyPageState extends State<BoxRouteDetailsReadOnlyPag
         content: Text(exe, style: TextStyle(fontSize: 18, fontFamily: "Poppins",
             fontWeight: FontWeight.w500),
         ));
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
 
@@ -592,7 +596,7 @@ class _BoxRouteDetailsReadOnlyPageState extends State<BoxRouteDetailsReadOnlyPag
                   fontWeight: FontWeight.w500, fontSize: 18),),
             actions: <Widget>[
 
-              FlatButton(
+              TextButton(
                 // color: Color(0xFF4938B4),
                   child: Padding(
                     padding: const EdgeInsets.all(5.0),
@@ -655,7 +659,7 @@ class _BoxRouteDetailsReadOnlyPageState extends State<BoxRouteDetailsReadOnlyPag
                   }
 
               ),
-              FlatButton(
+              TextButton(
                 // color: Color(0xffd47fa6),
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),

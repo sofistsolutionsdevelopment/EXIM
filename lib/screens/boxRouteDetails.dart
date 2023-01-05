@@ -71,7 +71,7 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
 
       final response = await http.post(
         Uri.parse(apiUrl),
-        headers: {HttpHeaders.ACCEPT: 'application/json', HttpHeaders.contentTypeHeader: 'application/json', 'x-access-token': _Token},
+        headers: {HttpHeaders.acceptHeader: 'application/json', HttpHeaders.contentTypeHeader: 'application/json', 'x-access-token': _Token},
         body: json.encode(  {
           "BoxNo_Value": widget.boxNo_Value,
         }),
@@ -159,7 +159,7 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
         check();
         _resultGetBoxRouteDetailsData =  getBoxRouteDetails();
       });
-      _scaffoldKey.currentState.showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Page Refreshed', style: TextStyle(
               fontFamily: "Poppins",
@@ -187,7 +187,7 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   _displaySnackBarInputValue(BuildContext context) {
     final snackBar = SnackBar(content: Text('Enter AWB Number', style: TextStyle(fontSize: 18),));
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
 
@@ -214,7 +214,7 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
 
       final response = await http.post(
         Uri.parse(apiUrl),
-        headers: {HttpHeaders.ACCEPT: 'application/json', HttpHeaders.contentTypeHeader: 'application/json', 'x-access-token': _Token},
+        headers: {HttpHeaders.acceptHeader: 'application/json', HttpHeaders.contentTypeHeader: 'application/json', 'x-access-token': _Token},
         body: json.encode(
             {
               "BoxQRCode": qrCodeResult,
@@ -275,7 +275,7 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
       debugPrint('Check save inputDDLValue : $inputDDLValue ');
       final response = await http.post(
         Uri.parse(apiUrl),
-        headers: {HttpHeaders.ACCEPT: 'application/json', HttpHeaders.contentTypeHeader: 'application/json', 'x-access-token': _Token},
+        headers: {HttpHeaders.acceptHeader: 'application/json', HttpHeaders.contentTypeHeader: 'application/json', 'x-access-token': _Token},
         body: json.encode(
             {
               "@RouteCode" :routeCode,
@@ -353,10 +353,12 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
             ),
             actions: <Widget>[
 
-              FlatButton(
-                color: Colors.red,
-                textColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              TextButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.red),
+                  textStyle: MaterialStateProperty.all(TextStyle(color: Colors.white,)),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))),
+                ),
                 child: Text('CANCEL',  style: TextStyle(fontFamily: "AlternateGothic",
                   fontWeight: FontWeight.w500, fontSize: 18, letterSpacing: 1 ,),),
                 onPressed: () {
@@ -366,12 +368,15 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
                 },
               ),
               SizedBox(width: 40,),
-              FlatButton(
-                color: Colors.green,
-                textColor: Colors.white,
+              TextButton(
+                style: ButtonStyle(
+                  textStyle: MaterialStateProperty.all(TextStyle(
+                    color: Colors.white,
+                  ),),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),)
+                ),
                 child: Text('SAVE',  style: TextStyle(fontFamily: "AlternateGothic",
                   fontWeight: FontWeight.w500, fontSize: 18, letterSpacing:1 ,),),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                 onPressed: () async{
                   if(_controllerInputValue.text == ""){
                     _controllerInputValue.clear();
@@ -450,7 +455,7 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
     print("Api getDDL 1.........");
     try{
       print("Api getDDL 1");
-      final _prefs = await SharedPreferences.getInstance();
+      SharedPreferences _prefs = await SharedPreferences.getInstance();
       String _API_Path = _prefs.getString('API_Path');
       String _Token = _prefs.getString('Token');
       debugPrint('Check getDDL _API_Path $_API_Path ');
@@ -462,7 +467,7 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
       print("Api getDDL _Token : $_Token");
       final response = await http.post(
         Uri.parse(apiUrl),
-        headers: {HttpHeaders.ACCEPT: 'application/json', HttpHeaders.contentTypeHeader: 'application/json', 'x-access-token': _Token},
+        headers: {HttpHeaders.acceptHeader: 'application/json', HttpHeaders.contentTypeHeader: 'application/json', 'x-access-token': _Token},
         body: json.encode(  {}),
       );
 
@@ -505,14 +510,14 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
   _displaySnackBar(BuildContext context) {
     final snackBar = SnackBar(content: Text('Invalid Box', style: TextStyle(fontSize: 18,fontFamily: "Poppins",
         fontWeight: FontWeight.w500),));
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
   _displaySnackBarExe(BuildContext context, String exe) {
     final snackBar = SnackBar(
         content: Text(exe, style: TextStyle(fontSize: 18,fontFamily: "Poppins",
             fontWeight: FontWeight.w500),
         ));
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
 
@@ -533,7 +538,7 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
                 fontWeight: FontWeight.w500,fontSize: 18),),
             actions: <Widget>[
 
-              FlatButton(
+              TextButton(
                 // color: Color(0xFF4938B4),
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
@@ -595,7 +600,7 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
                 }
 
               ),
-              FlatButton(
+              TextButton(
                 // color: Color(0xffd47fa6),
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
@@ -2384,7 +2389,7 @@ class _CustomDialogState extends State<CustomDialog> {
       print("Api getDDL _Token : $_Token");
       final response = await http.post(
         Uri.parse(apiUrl),
-        headers: {HttpHeaders.ACCEPT: 'application/json', HttpHeaders.contentTypeHeader: 'application/json', 'x-access-token': _Token},
+        headers: {HttpHeaders.acceptHeader: 'application/json', HttpHeaders.contentTypeHeader: 'application/json', 'x-access-token': _Token},
         body: json.encode(  {}),
       );
 
@@ -2456,7 +2461,7 @@ class _CustomDialogState extends State<CustomDialog> {
 
       final response = await http.post(
         Uri.parse(apiUrl),
-        headers: {HttpHeaders.ACCEPT: 'application/json', HttpHeaders.contentTypeHeader: 'application/json', 'x-access-token': _Token},
+        headers: {HttpHeaders.acceptHeader: 'application/json', HttpHeaders.contentTypeHeader: 'application/json', 'x-access-token': _Token},
         body: json.encode(
             {
               "@RouteCode" :routeCode,
@@ -2585,10 +2590,12 @@ class _CustomDialogState extends State<CustomDialog> {
         ),
       ),
       actions: <Widget>[
-        FlatButton(
-          color: Colors.red,
-          textColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        TextButton(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Colors.red,),
+            textStyle: MaterialStateProperty.all(TextStyle(color: Colors.white,)),
+            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),)
+          ),
           child: Text('CANCEL',  style: TextStyle(fontFamily: "AlternateGothic",
             fontWeight: FontWeight.w500, fontSize: 18, letterSpacing: 1 ,),),
           onPressed: () {
@@ -2598,12 +2605,14 @@ class _CustomDialogState extends State<CustomDialog> {
           },
         ),
         SizedBox(width: 40,),
-        FlatButton(
-          color: Colors.green,
-          textColor: Colors.white,
+        TextButton(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(Colors.green,),
+            textStyle: MaterialStateProperty.all(TextStyle(color: Colors.white,)),
+            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),)
+          ),
           child: Text('SAVE',  style: TextStyle(fontFamily: "AlternateGothic",
             fontWeight: FontWeight.w500, fontSize: 18, letterSpacing:1 ,),),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           onPressed: () async{
             setState(() {
 

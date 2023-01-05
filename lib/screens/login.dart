@@ -110,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                   fontWeight: FontWeight.w500,fontSize: 16),),
             ),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 //color: Colors.red,
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
@@ -120,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: ()=> exit(0),
 
               ),
-              FlatButton(
+              TextButton(
                 // color: Colors.green,
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
@@ -288,7 +288,7 @@ class _LoginPageState extends State<LoginPage> {
     final snackBar = SnackBar(
         content: Text(exe, style: TextStyle(fontSize: 20),
         ));
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
 

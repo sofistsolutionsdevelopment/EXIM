@@ -1,6 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:argon_buttons_flutter/argon_buttons_flutter.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:exim/constant/colors.dart';
 import 'package:exim/models/verifyOTPData_model.dart';
@@ -41,7 +41,9 @@ class _VerifyOtpState extends State<VerifyOtp> {
   final GlobalKey<FormState> _formStateKey = GlobalKey<FormState>();
 
   String _otpValue;
-
+  int secondsRemaining = 30;
+  bool enableResend = false;
+  Timer timer;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final TextEditingController _controllerMobileNo = new TextEditingController();
@@ -134,7 +136,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
       exe,
       style: TextStyle(fontSize: 20),
     ));
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   Future<LoginDataModel> resentOtp(
@@ -209,7 +211,34 @@ class _VerifyOtpState extends State<VerifyOtp> {
   @override
   void initState() {
     check();
+    timer = Timer.periodic(Duration(seconds: 1), (_) {
+      if (secondsRemaining != 0) {
+        setState(() {
+          secondsRemaining--;
+        });
+      } else {
+        setState(() {
+          enableResend = true;
+        });
+      }
+    });
     super.initState();
+  }
+
+  void _resendCode() {
+    //other code here
+    setState(() {
+      secondsRemaining = 30;
+      enableResend = false;
+      resentOtp(widget.contactNo, widget.devideId, widget.deviceName,
+          widget.mac, widget.imei, widget.token);
+    });
+  }
+
+  @override
+  dispose() {
+    timer.cancel();
+    super.dispose();
   }
 
   @override
@@ -400,72 +429,86 @@ class _VerifyOtpState extends State<VerifyOtp> {
                                                   ),
                                                 ),
                                               ),
-                                              ArgonTimerButton(
-                                                elevation: 0,
-                                                initialTimer: 30, // Optional
-                                                height: 40,
-                                                width: 120,
-                                                minWidth: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.30,
-                                                color: Colors.white,
-                                                borderRadius: 5.0,
-                                                child: Text(
-                                                  "Resend OTP",
-                                                  style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontFamily: "Poppins",
-                                                          fontWeight: FontWeight.w500,
-                                                          fontSize: 16,
-                                                          fontStyle: FontStyle.normal,letterSpacing: 0.5
-                                                        ),
-                                                ),
-                                                loader: (timeLeft) {
-                                                  return Text(
-                                                    "Wait | $timeLeft",
-                                                    style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.w700),
-                                                  );
-                                                },
-                                                onTap: (startTimer, btnState) {
-                                                  if (btnState ==
-                                                      ButtonState.Idle) {
-                                                    startTimer(30);
-                                                    resentOtp(widget.contactNo,widget.devideId,widget.deviceName,widget.mac,widget.imei,widget.token);
-                                                  }
-                                                },
-                                              ),
-                                              // InkWell(
-                                              //    onTap: () async{
-                                              //         resentOtp(widget.contactNo,widget.devideId,widget.deviceName,widget.mac,widget.imei,widget.token);
-                                              //       },
-                                              //   child: Container(
-                                              //     child: Align(
-                                              //       alignment: Alignment.center,
-                                              //       child: FittedBox(
-                                              //         fit:BoxFit.fitWidth,
-                                              //         child: Text(
-                                              //           "  RESEND OTP",
-                                              //           style: TextStyle(
+                                              // ArgonTimerButton(
+                                              //   elevation: 0,
+                                              //   initialTimer: 30, // Optional
+                                              //   height: 40,
+                                              //   width: 120,
+                                              //   minWidth: MediaQuery.of(context)
+                                              //           .size
+                                              //           .width *
+                                              //       0.30,
+                                              //   color: Colors.white,
+                                              //   borderRadius: 5.0,
+                                              //   child: Text(
+                                              //     "Resend OTP",
+                                              //     style: TextStyle(
                                               //             color: Colors.black,
                                               //             fontFamily: "Poppins",
                                               //             fontWeight: FontWeight.w500,
                                               //             fontSize: 16,
                                               //             fontStyle: FontStyle.normal,letterSpacing: 0.5
                                               //           ),
-                                              //         ),
-                                              //       ),
-                                              //     ),
                                               //   ),
+                                              //   loader: (timeLeft) {
+                                              //     return Text(
+                                              //       "Wait | $timeLeft",
+                                              //       style: TextStyle(
+                                              //           color: Colors.black,
+                                              //           fontSize: 18,
+                                              //           fontWeight:
+                                              //               FontWeight.w700),
+                                              //     );
+                                              //   },
+                                              //   onTap: (startTimer, btnState) {
+                                              //     if (btnState ==
+                                              //         ButtonState.Idle) {
+                                              //       startTimer(30);
+                                              //       resentOtp(widget.contactNo,widget.devideId,widget.deviceName,widget.mac,widget.imei,widget.token);
+                                              //     }
+                                              //   },
                                               // ),
                                             ],
                                           ),
                                         ),
-                                        SizedBox(height: 20),
+                                        SizedBox(height: 5),
+                                        InkWell(
+                                          onTap: enableResend  ? ()  async {
+                                            _resendCode();
+                                          }:null,
+                                          child: Container(
+                                            margin: EdgeInsets.only(bottom: 5,top: 5),
+                                            width: 130,
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(Radius.circular(5)),
+                                              border: Border.all(width: 1,color: enableResend ?Colors.black : Colors.grey,)
+                                            ),
+                                            child: Align(
+                                              alignment: Alignment.center,
+                                              child: FittedBox(
+                                                fit: BoxFit.fitWidth,
+                                                child: Text(
+                                                  "RESEND OTP",
+                                                  style: TextStyle(
+                                                      color: enableResend ?Colors.black : Colors.grey,
+                                                      fontFamily: "Poppins",
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      fontSize: 16,
+                                                      fontStyle:
+                                                          FontStyle.normal,
+                                                      letterSpacing: 0.5),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Text(
+                                          'after $secondsRemaining seconds',
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 10),
+                                        ),
                                       ],
                                     ),
                                   ),

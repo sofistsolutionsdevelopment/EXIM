@@ -16,7 +16,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   _displaySnackBar(BuildContext context) {
     final snackBar = SnackBar(content: Text('Your Contact No is not Registered with us. Please Register yourself.', style: TextStyle(fontSize: 20),));
-    _scaffoldKey.currentState.showSnackBar(snackBar);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   final TextEditingController _controllerMobileNo = new TextEditingController();

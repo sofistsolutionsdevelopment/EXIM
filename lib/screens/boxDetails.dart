@@ -59,7 +59,7 @@ class _BoxDetailsPageState extends State<BoxDetailsPage> {
       print("Api getBoxDetails _Token : $_Token");
       final response = await http.post(
         Uri.parse(apiUrl),
-        headers: {HttpHeaders.ACCEPT: 'application/json', HttpHeaders.contentTypeHeader: 'application/json', 'x-access-token': _Token},
+        headers: {HttpHeaders.acceptHeader: 'application/json', HttpHeaders.contentTypeHeader: 'application/json', 'x-access-token': _Token},
         body: json.encode({
           "ExportType_value": widget.exportType_value,
         }),
@@ -143,7 +143,7 @@ class _BoxDetailsPageState extends State<BoxDetailsPage> {
         check();
         _resultGetBoxDetailsData =  getBoxDetails();
       });
-      _scaffoldKey.currentState.showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Page Refreshed', style: TextStyle(
               fontFamily: "Poppins",

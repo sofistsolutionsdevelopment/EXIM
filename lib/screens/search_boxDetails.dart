@@ -56,7 +56,7 @@ class _Search_BoxDetailsPageState extends State<Search_BoxDetailsPage> {
       print("Api getBoxDetails _Token : $_Token");
       final response = await http.post(
         Uri.parse(apiUrl),
-        headers: {HttpHeaders.ACCEPT: 'application/json', HttpHeaders.contentTypeHeader: 'application/json', 'x-access-token': _Token},
+        headers: {HttpHeaders.acceptHeader: 'application/json', HttpHeaders.contentTypeHeader: 'application/json', 'x-access-token': _Token},
         body: json.encode({
           "SearchValue": _search
         }),
@@ -141,7 +141,7 @@ class _Search_BoxDetailsPageState extends State<Search_BoxDetailsPage> {
         _search = "-";
         _resultGetBoxDetailsData =  getBoxDetails(_search);
       });
-      _scaffoldKey.currentState.showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Text('Page Refreshed', style: TextStyle(
               fontFamily: "Poppins",

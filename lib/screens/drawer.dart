@@ -31,7 +31,7 @@ class _DrawerPageState extends State<DrawerPage> {
                 fontWeight: FontWeight.w500,fontSize: 16),),
             actions: <Widget>[
 
-              FlatButton(
+              TextButton(
                 //color: Color(0xFF4938B4),
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
@@ -47,7 +47,7 @@ class _DrawerPageState extends State<DrawerPage> {
                 // onPressed: ()=> exit(0),
 
               ),
-              FlatButton(
+              TextButton(
                 //color: Color(0xffd47fa6),
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
