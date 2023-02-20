@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'package:exim/screens/completedcancelboxdetails.dart';
 import 'package:exim/screens/search_boxDetails.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart' as http;
@@ -13,7 +14,6 @@ import 'package:exim/models/getExportTypeWiseBoxesData_model.dart';
 import 'package:exim/models/getExportTypeWiseBoxesResult_model.dart';
 import 'package:exim/transitions/slide_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'boxDetails.dart';
@@ -34,7 +34,6 @@ class DashPage extends StatefulWidget {
 }
 
 class _DashPageState extends State<DashPage> {
-
   String userName = "";
 
   int selectedPos = 1;
@@ -42,8 +41,16 @@ class _DashPageState extends State<DashPage> {
   double bottomNavBarHeight = 50;
 
   List<TabItem> tabItems = List.of([
-    new TabItem(Icons.person, "", Colors.white, ),
-    new TabItem(Icons.home, "", Colors.white,),
+    new TabItem(
+      Icons.person,
+      "",
+      Colors.white,
+    ),
+    new TabItem(
+      Icons.home,
+      "",
+      Colors.white,
+    ),
     new TabItem(Icons.settings, "", Colors.white),
   ]);
 
@@ -56,73 +63,74 @@ class _DashPageState extends State<DashPage> {
       Navigator.push(context, SlideLeftRoute(page: NoInternetPage()));
       /*Navigator.push(context,
           MaterialPageRoute(builder: (context) => NoInternetPage()));*/
-    }
-    else if (connectivityResult == ConnectivityResult.wifi || connectivityResult == ConnectivityResult.mobile) {
+    } else if (connectivityResult == ConnectivityResult.wifi ||
+        connectivityResult == ConnectivityResult.mobile) {
       print("*** _isConnected Dash page Load = $connectivityResult ****");
-
 
       final _prefs = await SharedPreferences.getInstance();
       userName = _prefs.getString('Username');
       print("*** _isConnected Dash page Load userName = $userName ****");
-
     }
   }
-
 
   int getExportTypeWiseBoxesListLenght;
   Map Json;
   List getExportTypeWiseBoxesDataList = List();
   List<GetExportTypeWiseBoxesResultModel> _resultGetExportTypeWiseBoxesResult;
   Future<GetExportTypeWiseBoxesDataModel> _resultGetExportTypeWiseBoxesData;
-  Future<GetExportTypeWiseBoxesDataModel> getExportTypeWiseBoxes () async{
+  Future<GetExportTypeWiseBoxesDataModel> getExportTypeWiseBoxes() async {
     print("Api getExportTypeWiseBoxes 1.........");
-    try{
+    try {
       print("Api getExportTypeWiseBoxes 1");
       final _prefs = await SharedPreferences.getInstance();
-      String _API_Path = _prefs.getString('API_Path');
-      String _Token = _prefs.getString('Token');
-      debugPrint('Check getExportTypeWiseBoxes _API_Path $_API_Path ');
-      debugPrint('Check getExportTypeWiseBoxes _Token $_Token ');
+      String APIPath = _prefs.getString('API_Path');
+      String Token = _prefs.getString('Token');
+      debugPrint('Check getExportTypeWiseBoxes _API_Path $APIPath ');
+      debugPrint('Check getExportTypeWiseBoxes _Token $Token ');
 
-      final String apiUrl = "$_API_Path/Dashboard/GetExportTypeWiseBoxes";
+      final String apiUrl = "$APIPath/Dashboard/GetExportTypeWiseBoxes";
 
       print("Api getExportTypeWiseBoxes 2");
-      print("Api getExportTypeWiseBoxes _Token : $_Token");
+      print("Api getExportTypeWiseBoxes _Token : $Token");
       final response = await http.post(
         Uri.parse(apiUrl),
-        headers: {HttpHeaders.contentTypeHeader: 'application/json', 'x-access-token': _Token},
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json',
+          'x-access-token': Token
+        },
         body: json.encode({}),
       );
 
       print("Api getExportTypeWiseBoxes 3");
 
-      print("Api getExportTypeWiseBoxes response code : ${response.statusCode}");
+      print(
+          "Api getExportTypeWiseBoxes response code : ${response.statusCode}");
 
-      if(response.statusCode == 200){
-
+      if (response.statusCode == 200) {
         print("Api getExportTypeWiseBoxes 4");
 
         final String responseString = response.body;
 
         Json = json.decode(responseString);
-        debugPrint('Api getExportTypeWiseBoxes 6 Json ${Json}');
+        debugPrint('Api getExportTypeWiseBoxes 6 Json $Json');
 
         getExportTypeWiseBoxesDataList = Json["Data"];
         setState(() {
-          getExportTypeWiseBoxesListLenght = getExportTypeWiseBoxesDataList.length;
+          getExportTypeWiseBoxesListLenght =
+              getExportTypeWiseBoxesDataList.length;
 
-          _resultGetExportTypeWiseBoxesResult = Json["Data"].map<GetExportTypeWiseBoxesResultModel>((e) => GetExportTypeWiseBoxesResultModel.fromJson(e)).toList();
+          _resultGetExportTypeWiseBoxesResult = Json["Data"]
+              .map<GetExportTypeWiseBoxesResultModel>(
+                  (e) => GetExportTypeWiseBoxesResultModel.fromJson(e))
+              .toList();
         });
 
-
         return getExportTypeWiseBoxesDataModelDataModelFromJson(responseString);
-      }
-      else{
+      } else {
         print("Api getExportTypeWiseBoxes 7");
         return null;
       }
-    }
-    catch (e) {
+    } catch (e) {
       print("Api getExportTypeWiseBoxes 8");
 
       print(e);
@@ -130,12 +138,11 @@ class _DashPageState extends State<DashPage> {
     }
   }
 
-
   @override
   void initState() {
     _navigationController = new CircularBottomNavigationController(selectedPos);
     check();
-    _resultGetExportTypeWiseBoxesData =  getExportTypeWiseBoxes();
+    _resultGetExportTypeWiseBoxesData = getExportTypeWiseBoxes();
     super.initState();
     // throw Exception("Testing is testing......");
   }
@@ -143,80 +150,170 @@ class _DashPageState extends State<DashPage> {
   Widget tab1() {
     return Container(
       color: appBgColor,
-      child:
-      FutureBuilder(
+      child: FutureBuilder(
           future: _resultGetExportTypeWiseBoxesData,
-          builder: (context, snapshot)
-          {
-            if (snapshot.hasData)
-            {
-              return  Center(
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Center(
                 child: ListView.builder(
                   itemCount: getExportTypeWiseBoxesDataList.length,
                   itemBuilder: (context, index) {
-                    if(getExportTypeWiseBoxesDataList[index]['isImport'] == 0){
+                    if (getExportTypeWiseBoxesDataList[index]['isImport'] ==
+                        0) {
                       return Padding(
-                      padding: const EdgeInsets.only(right:3,left:3,top:3),
-                      child: InkWell(
-                        onTap: () async{
-                          var connectivityResult = await (Connectivity().checkConnectivity());
-                          if (connectivityResult == ConnectivityResult.none) {
-                            print("*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
-                            Navigator.push(context, SlideLeftRoute(page: NoInternetPage()));
-                          }
-                          else if (connectivityResult == ConnectivityResult.wifi || connectivityResult == ConnectivityResult.mobile) {
-                            print("*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
-                            String exportType_value = getExportTypeWiseBoxesDataList[index]["ExportType_value"].toString();
-                            String exportType = getExportTypeWiseBoxesDataList[index]["ExportType"].toString();
-                            String boxCount = getExportTypeWiseBoxesDataList[index]["BoxCount"].toString();
+                        padding:
+                            const EdgeInsets.only(right: 3, left: 3, top: 3),
+                        child: InkWell(
+                          onTap: () async {
+                            var connectivityResult =
+                                await (Connectivity().checkConnectivity());
+                            if (connectivityResult == ConnectivityResult.none) {
+                              print(
+                                  "*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
+                              Navigator.push(context,
+                                  SlideLeftRoute(page: NoInternetPage()));
+                            } else if (connectivityResult ==
+                                    ConnectivityResult.wifi ||
+                                connectivityResult ==
+                                    ConnectivityResult.mobile) {
+                              print(
+                                  "*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
+                              String exportTypeValue =
+                                  getExportTypeWiseBoxesDataList[index]
+                                          ["ExportType_value"]
+                                      .toString();
+                              String exportType =
+                                  getExportTypeWiseBoxesDataList[index]
+                                          ["ExportType"]
+                                      .toString();
+                              String boxCount =
+                                  getExportTypeWiseBoxesDataList[index]
+                                          ["BoxCount"]
+                                      .toString();
 
-                            Navigator.push(context, SlideLeftRoute(page: BoxDetailsPage(exportType_value:exportType_value, exportType:exportType, boxCount:boxCount))).then((value){
-                              if(value == "success"){
-                                check();
-                                _resultGetExportTypeWiseBoxesData =  getExportTypeWiseBoxes();
+                              if (int.parse(exportTypeValue) < 0) {
+                                Navigator.push(
+                                        context,
+                                        SlideLeftRoute(
+                                            page: CompletedCancelBoxDetails(
+                                                exportType_value:
+                                                    exportTypeValue,
+                                                exportType: exportType,
+                                                boxCount: boxCount)))
+                                    .then((value) {
+                                  if (value == "success") {
+                                    check();
+                                    _resultGetExportTypeWiseBoxesData =
+                                        getExportTypeWiseBoxes();
+                                  }
+                                });
+                              } else {
+                                Navigator.push(
+                                        context,
+                                        SlideLeftRoute(
+                                            page: BoxDetailsPage(
+                                                exportType_value:
+                                                    exportTypeValue,
+                                                exportType: exportType,
+                                                boxCount: boxCount)))
+                                    .then((value) {
+                                  if (value == "success") {
+                                    check();
+                                    _resultGetExportTypeWiseBoxesData =
+                                        getExportTypeWiseBoxes();
+                                  }
+                                });
                               }
-                            });
-                          }
-                        },
-                        child: Card(
-                          color: Colors.white,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top:1,bottom: 1),
-                            child: ListTile(
-                              leading:  Image.asset(
-                                "assets/normalExport.png",width: 40,height: 40,
-                              ),
-                              title: Text(getExportTypeWiseBoxesDataList[index]["ExportType"], style:TextStyle(fontSize: 16, fontWeight: FontWeight.bold,),),
-                              subtitle: Text("${getExportTypeWiseBoxesDataList[index]["BoxCount"].toString()} Boxes", style:TextStyle(fontSize: 14, fontWeight: FontWeight.bold,),),
-                              trailing:CircleAvatar(
-                                radius: 15,
-                                backgroundColor: routePageColor.withOpacity(0.7),
-                                child: IconButton(
-                                    iconSize: 18,
-                                    padding: const EdgeInsets.only(left:6,right: 8),
-                                    icon: const Icon(Icons.navigate_next,color: Color(0xFF383182),),
-                                    onPressed: () async {
-                                      var connectivityResult = await (Connectivity().checkConnectivity());
-                                      if (connectivityResult == ConnectivityResult.none) {
-                                        print("*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
-                                        Navigator.push(context, SlideLeftRoute(page: NoInternetPage()));
-                                      }
-                                      else if (connectivityResult == ConnectivityResult.wifi || connectivityResult == ConnectivityResult.mobile) {
-                                        print("*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
-                                        String exportType_value = getExportTypeWiseBoxesDataList[index]["ExportType_value"].toString();
-                                        String exportType = getExportTypeWiseBoxesDataList[index]["ExportType"].toString();
-                                        String boxCount = getExportTypeWiseBoxesDataList[index]["BoxCount"].toString();
+                            }
+                          },
+                          child: Card(
+                            color: Colors.white,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 1, bottom: 1),
+                              child: ListTile(
+                                leading: Image.asset(
+                                  "assets/normalExport.png",
+                                  width: 40,
+                                  height: 40,
+                                ),
+                                title: Text(
+                                  getExportTypeWiseBoxesDataList[index]
+                                      ["ExportType"],
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  "${getExportTypeWiseBoxesDataList[index]["BoxCount"].toString()} Boxes",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                trailing: CircleAvatar(
+                                  radius: 15,
+                                  backgroundColor:
+                                      routePageColor.withOpacity(0.7),
+                                  child: IconButton(
+                                      iconSize: 18,
+                                      padding: const EdgeInsets.only(
+                                          left: 6, right: 8),
+                                      icon: const Icon(
+                                        Icons.navigate_next,
+                                        color: Color(0xFF383182),
+                                      ),
+                                      onPressed: () async {
+                                        var connectivityResult =
+                                            await (Connectivity()
+                                                .checkConnectivity());
+                                        if (connectivityResult ==
+                                            ConnectivityResult.none) {
+                                          print(
+                                              "*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
+                                          Navigator.push(
+                                              context,
+                                              SlideLeftRoute(
+                                                  page: NoInternetPage()));
+                                        } else if (connectivityResult ==
+                                                ConnectivityResult.wifi ||
+                                            connectivityResult ==
+                                                ConnectivityResult.mobile) {
+                                          print(
+                                              "*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
+                                          String exportTypeValue =
+                                              getExportTypeWiseBoxesDataList[
+                                                      index]["ExportType_value"]
+                                                  .toString();
+                                          String exportType =
+                                              getExportTypeWiseBoxesDataList[
+                                                      index]["ExportType"]
+                                                  .toString();
+                                          String boxCount =
+                                              getExportTypeWiseBoxesDataList[
+                                                      index]["BoxCount"]
+                                                  .toString();
 
-                                        Navigator.push(context, SlideLeftRoute(page: BoxDetailsPage(exportType_value:exportType_value, exportType:exportType, boxCount:boxCount))).then((value){
-                                          if(value == "success"){
-                                            check();
-                                            _resultGetExportTypeWiseBoxesData =  getExportTypeWiseBoxes();
-                                          }
-                                        });
-                                      }
-                                    }),
-                              ),
-                              /*
+                                          Navigator.push(
+                                                  context,
+                                                  SlideLeftRoute(
+                                                      page: BoxDetailsPage(
+                                                          exportType_value:
+                                                              exportTypeValue,
+                                                          exportType:
+                                                              exportType,
+                                                          boxCount: boxCount)))
+                                              .then((value) {
+                                            if (value == "success") {
+                                              check();
+                                              _resultGetExportTypeWiseBoxesData =
+                                                  getExportTypeWiseBoxes();
+                                            }
+                                          });
+                                        }
+                                      }),
+                                ),
+                                /*
                                Ink(width: 30,
                                 decoration:
                                 const ShapeDecoration(
@@ -241,35 +338,30 @@ class _DashPageState extends State<DashPage> {
                                       // do something
                                     }),
                               ),*/
-                             /* Image.asset(
+                                /* Image.asset(
                                 "assets/nextArrow.png",width: 30,height: 30,
                               ),*/
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                    }else{
+                      );
+                    } else {
                       return Container();
                     }
                   },
                 ),
               );
-            }
-            else if (snapshot.hasError)
-            {
+            } else if (snapshot.hasError) {
               return Align(alignment: Alignment.center, child: Text(""));
             }
 
-            return Center(child: SpinKitRotatingCircle(
+            return Center(
+                child: SpinKitRotatingCircle(
               color: appColor,
               size: 30.0,
             ));
-
-
-          }
-      ),
-
+          }),
     );
   }
 
@@ -277,12 +369,16 @@ class _DashPageState extends State<DashPage> {
     return Container(
       color: appBgColor,
       child: Padding(
-        padding: const EdgeInsets.only(top:8,left: 8,right: 8 ),
+        padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
         child: Center(
           child: Text(
             'Export Boxes Not Found',
-            style: TextStyle(fontSize: 22,color: appColor,fontFamily: "Poppins",
-              fontWeight: FontWeight.w500,),
+            style: TextStyle(
+              fontSize: 22,
+              color: appColor,
+              fontFamily: "Poppins",
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
       ),
@@ -291,72 +387,157 @@ class _DashPageState extends State<DashPage> {
 
   Widget tab2() {
     return FutureBuilder(
-          future: _resultGetExportTypeWiseBoxesData,
-          builder: (context, snapshot)
-          {
-            if (snapshot.hasData)
-            {
-              return  Center(
-                child: ListView.builder(
-                  itemCount: getExportTypeWiseBoxesDataList.length,
-                  itemBuilder: (context, index) {
-                    if(getExportTypeWiseBoxesDataList[index]['isImport'] == 1){
-                      return Padding(
-                      padding: const EdgeInsets.only(right:3,left:3,top:3),
+        future: _resultGetExportTypeWiseBoxesData,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Center(
+              child: ListView.builder(
+                itemCount: getExportTypeWiseBoxesDataList.length,
+                itemBuilder: (context, index) {
+                  if (getExportTypeWiseBoxesDataList[index]['isImport'] == 1) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 3, left: 3, top: 3),
                       child: InkWell(
-                        onTap: () async{
-                          var connectivityResult = await (Connectivity().checkConnectivity());
+                        onTap: () async {
+                          var connectivityResult =
+                              await (Connectivity().checkConnectivity());
                           if (connectivityResult == ConnectivityResult.none) {
-                            print("*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
-                            Navigator.push(context, SlideLeftRoute(page: NoInternetPage()));
-                          }
-                          else if (connectivityResult == ConnectivityResult.wifi || connectivityResult == ConnectivityResult.mobile) {
-                            print("*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
-                            String exportType_value = getExportTypeWiseBoxesDataList[index]["ExportType_value"].toString();
-                            String exportType = getExportTypeWiseBoxesDataList[index]["ExportType"].toString();
-                            String boxCount = getExportTypeWiseBoxesDataList[index]["BoxCount"].toString();
+                            print(
+                                "*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
+                            Navigator.push(context,
+                                SlideLeftRoute(page: NoInternetPage()));
+                          } else if (connectivityResult ==
+                                  ConnectivityResult.wifi ||
+                              connectivityResult == ConnectivityResult.mobile) {
+                            print(
+                                "*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
+                            String exportTypeValue =
+                                getExportTypeWiseBoxesDataList[index]
+                                        ["ExportType_value"]
+                                    .toString();
+                            String exportType =
+                                getExportTypeWiseBoxesDataList[index]
+                                        ["ExportType"]
+                                    .toString();
+                            String boxCount =
+                                getExportTypeWiseBoxesDataList[index]
+                                        ["BoxCount"]
+                                    .toString();
 
-                            Navigator.push(context, SlideLeftRoute(page: BoxDetailsPage(exportType_value:exportType_value, exportType:exportType, boxCount:boxCount))).then((value){
-                              if(value == "success"){
-                                check();
-                                _resultGetExportTypeWiseBoxesData =  getExportTypeWiseBoxes();
-                              }
-                            });
+                            if (int.parse(exportTypeValue) < 0) {
+                              Navigator.push(
+                                      context,
+                                      SlideLeftRoute(
+                                          page: CompletedCancelBoxDetails(
+                                              exportType_value: exportTypeValue,
+                                              exportType: exportType,
+                                              boxCount: boxCount)))
+                                  .then((value) {
+                                if (value == "success") {
+                                  check();
+                                  _resultGetExportTypeWiseBoxesData =
+                                      getExportTypeWiseBoxes();
+                                }
+                              });
+                            } else {
+                              Navigator.push(
+                                      context,
+                                      SlideLeftRoute(
+                                          page: BoxDetailsPage(
+                                              exportType_value: exportTypeValue,
+                                              exportType: exportType,
+                                              boxCount: boxCount)))
+                                  .then((value) {
+                                if (value == "success") {
+                                  check();
+                                  _resultGetExportTypeWiseBoxesData =
+                                      getExportTypeWiseBoxes();
+                                }
+                              });
+                            }
                           }
                         },
                         child: Card(
                           color: Colors.white,
                           child: Padding(
-                            padding: const EdgeInsets.only(top:1,bottom: 1),
+                            padding: const EdgeInsets.only(top: 1, bottom: 1),
                             child: ListTile(
-                              leading:  Image.asset(
-                                "assets/normalExport.png",width: 40,height: 40,
+                              leading: Image.asset(
+                                "assets/normalExport.png",
+                                width: 40,
+                                height: 40,
                               ),
-                              title: Text(getExportTypeWiseBoxesDataList[index]["ExportType"], style:TextStyle(fontSize: 16, fontWeight: FontWeight.bold,),),
-                              subtitle: Text("${getExportTypeWiseBoxesDataList[index]["BoxCount"].toString()} Boxes", style:TextStyle(fontSize: 14, fontWeight: FontWeight.bold,),),
-                              trailing:CircleAvatar(
+                              title: Text(
+                                getExportTypeWiseBoxesDataList[index]
+                                    ["ExportType"],
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: Text(
+                                "${getExportTypeWiseBoxesDataList[index]["BoxCount"].toString()} Boxes",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              trailing: CircleAvatar(
                                 radius: 15,
-                                backgroundColor: routePageColor.withOpacity(0.7),
+                                backgroundColor:
+                                    routePageColor.withOpacity(0.7),
                                 child: IconButton(
                                     iconSize: 18,
-                                    padding: const EdgeInsets.only(left:6,right: 8),
-                                    icon: const Icon(Icons.navigate_next,color: Color(0xFF383182),),
+                                    padding: const EdgeInsets.only(
+                                        left: 6, right: 8),
+                                    icon: const Icon(
+                                      Icons.navigate_next,
+                                      color: Color(0xFF383182),
+                                    ),
                                     onPressed: () async {
-                                      var connectivityResult = await (Connectivity().checkConnectivity());
-                                      if (connectivityResult == ConnectivityResult.none) {
-                                        print("*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
-                                        Navigator.push(context, SlideLeftRoute(page: NoInternetPage()));
-                                      }
-                                      else if (connectivityResult == ConnectivityResult.wifi || connectivityResult == ConnectivityResult.mobile) {
-                                        print("*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
-                                        String exportType_value = getExportTypeWiseBoxesDataList[index]["ExportType_value"].toString();
-                                        String exportType = getExportTypeWiseBoxesDataList[index]["ExportType"].toString();
-                                        String boxCount = getExportTypeWiseBoxesDataList[index]["BoxCount"].toString();
+                                      var connectivityResult =
+                                          await (Connectivity()
+                                              .checkConnectivity());
+                                      if (connectivityResult ==
+                                          ConnectivityResult.none) {
+                                        print(
+                                            "*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
+                                        Navigator.push(
+                                            context,
+                                            SlideLeftRoute(
+                                                page: NoInternetPage()));
+                                      } else if (connectivityResult ==
+                                              ConnectivityResult.wifi ||
+                                          connectivityResult ==
+                                              ConnectivityResult.mobile) {
+                                        print(
+                                            "*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
+                                        String exportTypeValue =
+                                            getExportTypeWiseBoxesDataList[
+                                                    index]["ExportType_value"]
+                                                .toString();
+                                        String exportType =
+                                            getExportTypeWiseBoxesDataList[
+                                                    index]["ExportType"]
+                                                .toString();
+                                        String boxCount =
+                                            getExportTypeWiseBoxesDataList[
+                                                    index]["BoxCount"]
+                                                .toString();
 
-                                        Navigator.push(context, SlideLeftRoute(page: BoxDetailsPage(exportType_value:exportType_value, exportType:exportType, boxCount:boxCount))).then((value){
-                                          if(value == "success"){
+                                        Navigator.push(
+                                                context,
+                                                SlideLeftRoute(
+                                                    page: BoxDetailsPage(
+                                                        exportType_value:
+                                                            exportTypeValue,
+                                                        exportType: exportType,
+                                                        boxCount: boxCount)))
+                                            .then((value) {
+                                          if (value == "success") {
                                             check();
-                                            _resultGetExportTypeWiseBoxesData =  getExportTypeWiseBoxes();
+                                            _resultGetExportTypeWiseBoxesData =
+                                                getExportTypeWiseBoxes();
                                           }
                                         });
                                       }
@@ -387,7 +568,7 @@ class _DashPageState extends State<DashPage> {
                                       // do something
                                     }),
                               ),*/
-                             /* Image.asset(
+                              /* Image.asset(
                                 "assets/nextArrow.png",width: 30,height: 30,
                               ),*/
                             ),
@@ -395,97 +576,177 @@ class _DashPageState extends State<DashPage> {
                         ),
                       ),
                     );
-                 
-                    }else{
-                      return Container();
-                    }
-                  },
-                ),
-              );
-            }
-            else if (snapshot.hasError)
-            {
-              return Align(alignment: Alignment.center, child: Text(""));
-            }
-
-            return Center(child: SpinKitRotatingCircle(
-              color: appColor,
-              size: 30.0,
-            ));
-
-
+                  } else {
+                    return Container();
+                  }
+                },
+              ),
+            );
+          } else if (snapshot.hasError) {
+            return Align(alignment: Alignment.center, child: Text(""));
           }
-      );
+
+          return Center(
+              child: SpinKitRotatingCircle(
+            color: appColor,
+            size: 30.0,
+          ));
+        });
   }
 
   Widget tab3() {
     return FutureBuilder(
-          future: _resultGetExportTypeWiseBoxesData,
-          builder: (context, snapshot)
-          {
-            if (snapshot.hasData)
-            {
-              return  Center(
-                child: ListView.builder(
-                  itemCount: getExportTypeWiseBoxesDataList.length,
-                  itemBuilder: (context, index) {
-                    if(getExportTypeWiseBoxesDataList[index]['isImport'] == 2){
-                      return Padding(
-                      padding: const EdgeInsets.only(right:3,left:3,top:3),
+        future: _resultGetExportTypeWiseBoxesData,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Center(
+              child: ListView.builder(
+                itemCount: getExportTypeWiseBoxesDataList.length,
+                itemBuilder: (context, index) {
+                  if (getExportTypeWiseBoxesDataList[index]['isImport'] == 2) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 3, left: 3, top: 3),
                       child: InkWell(
-                        onTap: () async{
-                          var connectivityResult = await (Connectivity().checkConnectivity());
+                        onTap: () async {
+                          var connectivityResult =
+                              await (Connectivity().checkConnectivity());
                           if (connectivityResult == ConnectivityResult.none) {
-                            print("*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
-                            Navigator.push(context, SlideLeftRoute(page: NoInternetPage()));
-                          }
-                          else if (connectivityResult == ConnectivityResult.wifi || connectivityResult == ConnectivityResult.mobile) {
-                            print("*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
-                            String exportType_value = getExportTypeWiseBoxesDataList[index]["ExportType_value"].toString();
-                            String exportType = getExportTypeWiseBoxesDataList[index]["ExportType"].toString();
-                            String boxCount = getExportTypeWiseBoxesDataList[index]["BoxCount"].toString();
+                            print(
+                                "*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
+                            Navigator.push(context,
+                                SlideLeftRoute(page: NoInternetPage()));
+                          } else if (connectivityResult ==
+                                  ConnectivityResult.wifi ||
+                              connectivityResult == ConnectivityResult.mobile) {
+                            print(
+                                "*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
+                            String exportTypeValue =
+                                getExportTypeWiseBoxesDataList[index]
+                                        ["ExportType_value"]
+                                    .toString();
+                            String exportType =
+                                getExportTypeWiseBoxesDataList[index]
+                                        ["ExportType"]
+                                    .toString();
+                            String boxCount =
+                                getExportTypeWiseBoxesDataList[index]
+                                        ["BoxCount"]
+                                    .toString();
 
-                            Navigator.push(context, SlideLeftRoute(page: BoxDetailsPage(exportType_value:exportType_value, exportType:exportType, boxCount:boxCount))).then((value){
-                              if(value == "success"){
-                                check();
-                                _resultGetExportTypeWiseBoxesData =  getExportTypeWiseBoxes();
-                              }
-                            });
+                            if (int.parse(exportTypeValue) < 0) {
+                              Navigator.push(
+                                      context,
+                                      SlideLeftRoute(
+                                          page: CompletedCancelBoxDetails(
+                                              exportType_value: exportTypeValue,
+                                              exportType: exportType,
+                                              boxCount: boxCount)))
+                                  .then((value) {
+                                if (value == "success") {
+                                  check();
+                                  _resultGetExportTypeWiseBoxesData =
+                                      getExportTypeWiseBoxes();
+                                }
+                              });
+                            } else {
+                              Navigator.push(
+                                      context,
+                                      SlideLeftRoute(
+                                          page: BoxDetailsPage(
+                                              exportType_value: exportTypeValue,
+                                              exportType: exportType,
+                                              boxCount: boxCount)))
+                                  .then((value) {
+                                if (value == "success") {
+                                  check();
+                                  _resultGetExportTypeWiseBoxesData =
+                                      getExportTypeWiseBoxes();
+                                }
+                              });
+                            }
                           }
                         },
                         child: Card(
                           color: Colors.white,
                           child: Padding(
-                            padding: const EdgeInsets.only(top:1,bottom: 1),
+                            padding: const EdgeInsets.only(top: 1, bottom: 1),
                             child: ListTile(
-                              leading:  Image.asset(
-                                "assets/normalExport.png",width: 40,height: 40,
+                              leading: Image.asset(
+                                "assets/normalExport.png",
+                                width: 40,
+                                height: 40,
                               ),
-                              title: Text(getExportTypeWiseBoxesDataList[index]["ExportType"], style:TextStyle(fontSize: 16, fontWeight: FontWeight.bold,),),
-                              subtitle: Text("${getExportTypeWiseBoxesDataList[index]["BoxCount"].toString()} Boxes", style:TextStyle(fontSize: 14, fontWeight: FontWeight.bold,),),
-                              trailing:CircleAvatar(
+                              title: Text(
+                                getExportTypeWiseBoxesDataList[index]
+                                    ["ExportType"],
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: Text(
+                                "${getExportTypeWiseBoxesDataList[index]["BoxCount"].toString()} Boxes",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              trailing: CircleAvatar(
                                 radius: 15,
-                                backgroundColor: routePageColor.withOpacity(0.7),
+                                backgroundColor:
+                                    routePageColor.withOpacity(0.7),
                                 child: IconButton(
                                     iconSize: 18,
-                                    padding: const EdgeInsets.only(left:6,right: 8),
-                                    icon: const Icon(Icons.navigate_next,color: Color(0xFF383182),),
+                                    padding: const EdgeInsets.only(
+                                        left: 6, right: 8),
+                                    icon: const Icon(
+                                      Icons.navigate_next,
+                                      color: Color(0xFF383182),
+                                    ),
                                     onPressed: () async {
-                                      var connectivityResult = await (Connectivity().checkConnectivity());
-                                      if (connectivityResult == ConnectivityResult.none) {
-                                        print("*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
-                                        Navigator.push(context, SlideLeftRoute(page: NoInternetPage()));
-                                      }
-                                      else if (connectivityResult == ConnectivityResult.wifi || connectivityResult == ConnectivityResult.mobile) {
-                                        print("*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
-                                        String exportType_value = getExportTypeWiseBoxesDataList[index]["ExportType_value"].toString();
-                                        String exportType = getExportTypeWiseBoxesDataList[index]["ExportType"].toString();
-                                        String boxCount = getExportTypeWiseBoxesDataList[index]["BoxCount"].toString();
+                                      var connectivityResult =
+                                          await (Connectivity()
+                                              .checkConnectivity());
+                                      if (connectivityResult ==
+                                          ConnectivityResult.none) {
+                                        print(
+                                            "*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
+                                        Navigator.push(
+                                            context,
+                                            SlideLeftRoute(
+                                                page: NoInternetPage()));
+                                      } else if (connectivityResult ==
+                                              ConnectivityResult.wifi ||
+                                          connectivityResult ==
+                                              ConnectivityResult.mobile) {
+                                        print(
+                                            "*** _isConnected Dash Cancelled Exports btn = $connectivityResult ****");
+                                        String exportTypeValue =
+                                            getExportTypeWiseBoxesDataList[
+                                                    index]["ExportType_value"]
+                                                .toString();
+                                        String exportType =
+                                            getExportTypeWiseBoxesDataList[
+                                                    index]["ExportType"]
+                                                .toString();
+                                        String boxCount =
+                                            getExportTypeWiseBoxesDataList[
+                                                    index]["BoxCount"]
+                                                .toString();
 
-                                        Navigator.push(context, SlideLeftRoute(page: BoxDetailsPage(exportType_value:exportType_value, exportType:exportType, boxCount:boxCount))).then((value){
-                                          if(value == "success"){
+                                        Navigator.push(
+                                                context,
+                                                SlideLeftRoute(
+                                                    page: BoxDetailsPage(
+                                                        exportType_value:
+                                                            exportTypeValue,
+                                                        exportType: exportType,
+                                                        boxCount: boxCount)))
+                                            .then((value) {
+                                          if (value == "success") {
                                             check();
-                                            _resultGetExportTypeWiseBoxesData =  getExportTypeWiseBoxes();
+                                            _resultGetExportTypeWiseBoxesData =
+                                                getExportTypeWiseBoxes();
                                           }
                                         });
                                       }
@@ -516,7 +777,7 @@ class _DashPageState extends State<DashPage> {
                                       // do something
                                     }),
                               ),*/
-                             /* Image.asset(
+                              /* Image.asset(
                                 "assets/nextArrow.png",width: 30,height: 30,
                               ),*/
                             ),
@@ -524,29 +785,23 @@ class _DashPageState extends State<DashPage> {
                         ),
                       ),
                     );
-                 
-                    }else{
-                      return Container();
-                    }
-                  },
-                ),
-              );
-            }
-            else if (snapshot.hasError)
-            {
-              return Align(alignment: Alignment.center, child: Text(""));
-            }
-
-            return Center(child: SpinKitRotatingCircle(
-              color: appColor,
-              size: 30.0,
-            ));
-
-
+                  } else {
+                    return Container();
+                  }
+                },
+              ),
+            );
+          } else if (snapshot.hasError) {
+            return Align(alignment: Alignment.center, child: Text(""));
           }
-      );
-  }
 
+          return Center(
+              child: SpinKitRotatingCircle(
+            color: appColor,
+            size: 30.0,
+          ));
+        });
+  }
 
   Widget child;
 
@@ -558,14 +813,19 @@ class _DashPageState extends State<DashPage> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
-              topRight: Radius.circular(20),topLeft: Radius.circular(20),
-            ),color: appBgColor,
+              topRight: Radius.circular(20),
+              topLeft: Radius.circular(20),
+            ),
+            color: appBgColor,
           ),
           child: Center(
             child: Text(
               userName,
-              style: TextStyle(color: Colors.black, fontFamily: "Poppins",
-                  fontWeight: FontWeight.w500, fontSize: 20),
+              style: TextStyle(
+                  color: Colors.black,
+                  fontFamily: "Poppins",
+                  fontWeight: FontWeight.w500,
+                  fontSize: 20),
             ),
           ),
         ),
@@ -576,11 +836,11 @@ class _DashPageState extends State<DashPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final GlobalKey<LiquidPullToRefreshState> _refreshIndicatorKey =
-  GlobalKey<LiquidPullToRefreshState>();
+      GlobalKey<LiquidPullToRefreshState>();
 
   static int refreshNum = 10; // number that changes when refreshed
   Stream<int> counterStream =
-  Stream<int>.periodic(const Duration(seconds: 1), (x) => refreshNum);
+      Stream<int>.periodic(const Duration(seconds: 1), (x) => refreshNum);
 
   ScrollController _scrollController;
 
@@ -598,14 +858,20 @@ class _DashPageState extends State<DashPage> {
       // Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => BoxRouteDetailsPage(exportType_value:widget.exportType_value, exportType:widget.exportType, boxNo_Value:widget.boxNo_Value, boxNo:widget.boxNo, boxCount:widget.boxCount)));
       setState(() {
         check();
-        _resultGetExportTypeWiseBoxesData =  getExportTypeWiseBoxes();
+        _resultGetExportTypeWiseBoxesData = getExportTypeWiseBoxes();
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Page Refreshed', style: TextStyle(
-              fontFamily: "Poppins",
-              fontWeight: FontWeight.w500,fontSize: 16,color: Colors.white,letterSpacing: 0.1),),
+          content: const Text(
+            'Page Refreshed',
+            style: TextStyle(
+                fontFamily: "Poppins",
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
+                color: Colors.white,
+                letterSpacing: 0.1),
+          ),
         ),
       );
       // _resultGetBoxRouteDetailsData =  getBoxRouteDetails();
@@ -625,11 +891,14 @@ class _DashPageState extends State<DashPage> {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.only(
-                topRight: Radius.circular(20),topLeft: Radius.circular(20),),  color: appBgColor,
+                topRight: Radius.circular(20),
+                topLeft: Radius.circular(20),
+              ),
+              color: appBgColor,
             ),
             child: Padding(
-              padding: const EdgeInsets.only(top:30,right: 10, left: 10),
-              child:DefaultTabController(
+              padding: const EdgeInsets.only(top: 30, right: 10, left: 10),
+              child: DefaultTabController(
                 length: 3,
                 child: Scaffold(
                   key: _scaffoldKey,
@@ -638,14 +907,16 @@ class _DashPageState extends State<DashPage> {
                   appBar: PreferredSize(
                     preferredSize: Size(double.infinity, 40),
                     child: AppBar(
-                      backgroundColor: Color(0xfff7f7f7),elevation: 1,
+                      backgroundColor: Color(0xfff7f7f7),
+                      elevation: 1,
                       automaticallyImplyLeading: false,
-                       flexibleSpace: TabBar(
-                        labelColor:  Colors.white,
+                      flexibleSpace: TabBar(
+                        labelColor: Colors.white,
                         unselectedLabelColor: Colors.black45,
                         isScrollable: false,
                         indicator: BoxDecoration(
-                            borderRadius: BorderRadius.circular(2), // Creates border
+                            borderRadius:
+                                BorderRadius.circular(2), // Creates border
                             color: appBtnColor), //Cha
                         tabs: [
                           Tab(
@@ -653,20 +924,24 @@ class _DashPageState extends State<DashPage> {
                               alignment: Alignment.center,
                               child: Text(
                                 "EXPORTS",
-                                style: TextStyle(fontSize: 22,fontFamily: "AlternateGothic",
-                                    fontWeight: FontWeight.w500,letterSpacing: 1),
+                                style: TextStyle(
+                                    fontSize: 22,
+                                    fontFamily: "AlternateGothic",
+                                    fontWeight: FontWeight.w500,
+                                    letterSpacing: 1),
                               ),
                             ),
                           ),
-
-
                           Tab(
                             child: Align(
                               alignment: Alignment.center,
                               child: Text(
                                 "IMPORTS",
-                                style: TextStyle(fontSize: 22,fontFamily: "AlternateGothic",
-                                    fontWeight: FontWeight.w500,letterSpacing: 1),
+                                style: TextStyle(
+                                    fontSize: 22,
+                                    fontFamily: "AlternateGothic",
+                                    fontWeight: FontWeight.w500,
+                                    letterSpacing: 1),
                               ),
                             ),
                           ),
@@ -675,8 +950,11 @@ class _DashPageState extends State<DashPage> {
                               alignment: Alignment.center,
                               child: Text(
                                 "DTA",
-                                style: TextStyle(fontSize: 22,fontFamily: "AlternateGothic",
-                                    fontWeight: FontWeight.w500,letterSpacing: 1),
+                                style: TextStyle(
+                                    fontSize: 22,
+                                    fontFamily: "AlternateGothic",
+                                    fontWeight: FontWeight.w500,
+                                    letterSpacing: 1),
                               ),
                             ),
                           ),
@@ -686,10 +964,8 @@ class _DashPageState extends State<DashPage> {
                   ),
                   body: TabBarView(
                     children: [
-                      if (getExportTypeWiseBoxesListLenght == 0)
-                      tab1dummy(),
-                      if (getExportTypeWiseBoxesListLenght != 0)
-                      tab1(),
+                      if (getExportTypeWiseBoxesListLenght == 0) tab1dummy(),
+                      if (getExportTypeWiseBoxesListLenght != 0) tab1(),
                       tab2(),
                       tab3(),
                     ],
@@ -711,14 +987,19 @@ class _DashPageState extends State<DashPage> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
-              topRight: Radius.circular(20),topLeft: Radius.circular(20),
-            ),color: appBgColor,
+              topRight: Radius.circular(20),
+              topLeft: Radius.circular(20),
+            ),
+            color: appBgColor,
           ),
           child: Center(
             child: Text(
               "Version  :  1.0",
-              style: TextStyle(color: Colors.black, fontFamily: "Poppins",
-                  fontWeight: FontWeight.w500, fontSize: 20),
+              style: TextStyle(
+                  color: Colors.black,
+                  fontFamily: "Poppins",
+                  fontWeight: FontWeight.w500,
+                  fontSize: 20),
             ),
           ),
         ),
@@ -731,37 +1012,62 @@ class _DashPageState extends State<DashPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title:  Container(
+            title: Container(
               color: appColor,
               child: Padding(
-                padding: const EdgeInsets.only(left:1, right:1, top:12, bottom:12),
-                child: Text('Are you sure?',style: TextStyle(fontFamily: "Poppins",
-                    fontWeight: FontWeight.w700,fontSize: 18, color: Colors.white),textAlign:TextAlign.center ,),
+                padding: const EdgeInsets.only(
+                    left: 1, right: 1, top: 12, bottom: 12),
+                child: Text(
+                  'Are you sure?',
+                  style: TextStyle(
+                      fontFamily: "Poppins",
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18,
+                      color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
             content: FittedBox(
               fit: BoxFit.fitWidth,
-              child: Text('You are going to exit the application!!', style: TextStyle(fontFamily: "Poppins",
-                  fontWeight: FontWeight.w500,fontSize: 16),),
+              child: Text(
+                'You are going to exit the application!!',
+                style: TextStyle(
+                    fontFamily: "Poppins",
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16),
+              ),
             ),
             actions: <Widget>[
-
               TextButton(
                 // color: Color(0xFF4938B4),
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
-                  child: Text('Yes',style: TextStyle(color: appColor,fontSize: 18, fontFamily: "Poppins",
-                    fontWeight: FontWeight.w700,),),
+                  child: Text(
+                    'Yes',
+                    style: TextStyle(
+                      color: appColor,
+                      fontSize: 18,
+                      fontFamily: "Poppins",
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
-                onPressed: ()=> exit(0),
-
+                onPressed: () => exit(0),
               ),
               TextButton(
                 // color: Color(0xffd47fa6),
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
-                  child: Text('No',style: TextStyle(color: appColor,fontSize: 18, fontFamily: "Poppins",
-                    fontWeight: FontWeight.w700,),),
+                  child: Text(
+                    'No',
+                    style: TextStyle(
+                      color: appColor,
+                      fontSize: 18,
+                      fontFamily: "Poppins",
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop(false);
@@ -772,33 +1078,33 @@ class _DashPageState extends State<DashPage> {
         });
   }
 
-
-
   String qrCodeResult = "";
 
   int index = 0;
   ValidateScanBoxDataModel _validateQRResult;
   String statusCode;
-  Future<ValidateScanBoxDataModel> validateQR (String qrCodeResult) async {
+  Future<ValidateScanBoxDataModel> validateQR(String qrCodeResult) async {
     try {
       final _prefs = await SharedPreferences.getInstance();
-      String _API_Path = _prefs.getString('API_Path');
-      String _Token = _prefs.getString('Token');
-      debugPrint('Check getBoxRouteDetails _API_Path $_API_Path ');
-      debugPrint('Check getBoxRouteDetails _Token $_Token ');
-      final String apiUrl = "$_API_Path/Dashboard/ValidateScanBox";
+      String APIPath = _prefs.getString('API_Path');
+      String Token = _prefs.getString('Token');
+      debugPrint('Check getBoxRouteDetails _API_Path $APIPath ');
+      debugPrint('Check getBoxRouteDetails _Token $Token ');
+      final String apiUrl = "$APIPath/Dashboard/ValidateScanBox";
       debugPrint('Check validateQR qrCodeResult $qrCodeResult ');
       debugPrint('Check validateQR 1 ');
       debugPrint('Check validateQR apiUrl : $apiUrl ');
 
-
       final response = await http.post(
         Uri.parse(apiUrl),
-        headers: {HttpHeaders.acceptHeader: 'application/json', HttpHeaders.contentTypeHeader: 'application/json', 'x-access-token': _Token},
-        body: json.encode(
-            {
-              "BoxQRCode": qrCodeResult,
-            }),
+        headers: {
+          HttpHeaders.acceptHeader: 'application/json',
+          HttpHeaders.contentTypeHeader: 'application/json',
+          'x-access-token': Token
+        },
+        body: json.encode({
+          "BoxQRCode": qrCodeResult,
+        }),
       );
       debugPrint('Check validateQR 2');
       debugPrint('Check validateQR statusCode : ${response.statusCode}');
@@ -820,8 +1126,7 @@ class _DashPageState extends State<DashPage> {
         final String responseString = response.body;
         debugPrint('Check mAuthenticate responseString $responseString ');
         return validateScanBoxDataModelFromJsonExe(responseString);
-      }
-      else {
+      } else {
         debugPrint('Check validateQR 5');
 
         return null;
@@ -833,18 +1138,24 @@ class _DashPageState extends State<DashPage> {
   }
 
   _displaySnackBar(BuildContext context) {
-    final snackBar = SnackBar(content: Text('Invalid Box', style: TextStyle(fontSize: 18,fontFamily: "Poppins",
-        fontWeight: FontWeight.w500),));
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-  _displaySnackBarExe(BuildContext context, String exe) {
     final snackBar = SnackBar(
-        content: Text(exe, style: TextStyle(fontSize: 18,fontFamily: "Poppins",
-            fontWeight: FontWeight.w500),
-        ));
+        content: Text(
+      'Invalid Box',
+      style: TextStyle(
+          fontSize: 18, fontFamily: "Poppins", fontWeight: FontWeight.w500),
+    ));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
+  _displaySnackBarExe(BuildContext context, String exe) {
+    final snackBar = SnackBar(
+        content: Text(
+      exe,
+      style: TextStyle(
+          fontSize: 18, fontFamily: "Poppins", fontWeight: FontWeight.w500),
+    ));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -864,49 +1175,59 @@ class _DashPageState extends State<DashPage> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: appBgColor,
-        appBar:
-        PreferredSize(
+        appBar: PreferredSize(
           preferredSize: Size(double.infinity, 95),
           child: AppBar(
-            backgroundColor: appbarColor,elevation: 0,
+            backgroundColor: appbarColor,
+            elevation: 0,
             centerTitle: true,
             leading: Builder(
               builder: (context) => Padding(
-                padding: const EdgeInsets.only(top:10),
+                padding: const EdgeInsets.only(top: 10),
                 child: IconButton(
-                  icon:  Image.asset(
-                    "assets/drawer_ic.png",width: 30,height: 30,
+                  icon: Image.asset(
+                    "assets/drawer_ic.png",
+                    width: 30,
+                    height: 30,
                   ),
                   onPressed: () => Scaffold.of(context).openDrawer(),
                 ),
               ),
             ),
-            title:Padding(
-              padding: const EdgeInsets.only(top:10),
+            title: Padding(
+              padding: const EdgeInsets.only(top: 10),
               child: Text(
-                "DASHBOARD", style: TextStyle(
-                fontFamily: "AlternateGothic",
-                fontWeight: FontWeight.w500,fontSize: 28,color: Colors.white,letterSpacing: 1),),
+                "DASHBOARD",
+                style: TextStyle(
+                    fontFamily: "AlternateGothic",
+                    fontWeight: FontWeight.w500,
+                    fontSize: 28,
+                    color: Colors.white,
+                    letterSpacing: 1),
+              ),
             ),
-           actions: <Widget>[
+            actions: <Widget>[
               IconButton(
-                icon:  Image.asset(
-                  "assets/scanner.png",width: 30,height: 25,
+                icon: Image.asset(
+                  "assets/scanner.png",
+                  width: 30,
+                  height: 25,
                 ),
-                onPressed: () async{
+                onPressed: () async {
                   await Permission.camera.request();
                   String codeSanner = await scanner.scan();
                   setState(() {
                     qrCodeResult = codeSanner.toString();
                   });
                   debugPrint('Check codeSanner === : $codeSanner');
-                  if(codeSanner == null){
-                    debugPrint('Check qrCodeResult ================= "": $qrCodeResult');
-                  }
-                  else if(codeSanner != null) {
+                  if (codeSanner == null) {
+                    debugPrint(
+                        'Check qrCodeResult ================= "": $qrCodeResult');
+                  } else if (codeSanner != null) {
                     debugPrint('Check qrCodeResult != "": $qrCodeResult');
 
-                    final ValidateScanBoxDataModel validateQRresult = await validateQR(qrCodeResult);
+                    final ValidateScanBoxDataModel validateQRresult =
+                        await validateQR(qrCodeResult);
                     debugPrint('2');
 
                     setState(() {
@@ -919,11 +1240,11 @@ class _DashPageState extends State<DashPage> {
                     if (validateQRresult == null) {
                       debugPrint('**');
                       _displaySnackBar(context);
-                    }
-                    else {
-                      if(statusCode == "500"){
+                    } else {
+                      if (statusCode == "500") {
                         if (_validateQRResult.ExceptionMessage != "") {
-                          debugPrint('statusCode : 500 *** ${_validateQRResult.ExceptionMessage}');
+                          debugPrint(
+                              'statusCode : 500 *** ${_validateQRResult.ExceptionMessage}');
 
                           debugPrint('_displaySnackBarExe **');
                           String exe = _validateQRResult.ExceptionMessage;
@@ -931,58 +1252,76 @@ class _DashPageState extends State<DashPage> {
                           //  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) => DashPage()));
                         }
                       }
-                      if(statusCode == "200"){
-                        String Validate = "${_validateQRResult.Data[0].Validate.toString()}";
+                      if (statusCode == "200") {
+                        String Validate =
+                            "${_validateQRResult.Data[0].Validate.toString()}";
 
-                        if(Validate == "1"){
+                        if (Validate == "1") {
+                          String boxNoValue =
+                              "${_validateQRResult.Data[0].BoxNo_Value.toString()}";
+                          String boxNo =
+                              "${_validateQRResult.Data[0].BoxNo.toString()}";
+                          String invoiceNo =
+                              "${_validateQRResult.Data[0].InvoiceNo.toString()}";
+                          String custShortCode =
+                              "${_validateQRResult.Data[0].CustShortCode.toString()}";
 
-                          String boxNo_Value = "${_validateQRResult.Data[0].BoxNo_Value.toString()}";
-                          String boxNo = "${_validateQRResult.Data[0].BoxNo.toString()}";
-                          String invoiceNo = "${_validateQRResult.Data[0].InvoiceNo.toString()}";
-                          String custShortCode = "${_validateQRResult.Data[0].CustShortCode.toString()}";
-
-                          debugPrint('boxNo_Value : $boxNo_Value');
+                          debugPrint('boxNo_Value : $boxNoValue');
                           debugPrint('boxNo : $boxNo');
                           debugPrint('invoiceNo : $invoiceNo');
                           debugPrint('custShortCode : $custShortCode');
 
-                          Navigator.push(context, SlideLeftRoute(page: DirectScan_BoxRouteDetailsPage(boxNo_Value:boxNo_Value, boxNo:boxNo, invoiceNo:invoiceNo, custShortCode:custShortCode)));
+                          Navigator.push(
+                              context,
+                              SlideLeftRoute(
+                                  page: DirectScan_BoxRouteDetailsPage(
+                                      boxNo_Value: boxNoValue,
+                                      boxNo: boxNo,
+                                      invoiceNo: invoiceNo,
+                                      custShortCode: custShortCode)));
                         }
-                        if(Validate == "0"){
+                        if (Validate == "0") {
                           debugPrint('**');
-                          String exe = "${_validateQRResult.Data[index].ScanMessage.toString()}";
-                          _displaySnackBarExe(context,exe);
+                          String exe =
+                              "${_validateQRResult.Data[index].ScanMessage.toString()}";
+                          _displaySnackBarExe(context, exe);
                         }
-
-                      }
-                      else{
+                      } else {
                         debugPrint('**');
                         _displaySnackBar(context);
                       }
-
                     }
-
                   }
                 },
               ),
               IconButton(
-                icon: Icon(Icons.search,size: 30,color: Colors.white,),
-                onPressed: (){
-                  Navigator.push(context, SlideLeftRoute(page: Search_BoxDetailsPage())).then((value){
-                    if(value == "success"){
-                      _resultGetExportTypeWiseBoxesData =  getExportTypeWiseBoxes();
-                    }
-                  });
-
-                }
-              ),
+                  icon: Icon(
+                    Icons.search,
+                    size: 30,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.push(context,
+                            SlideLeftRoute(page: Search_BoxDetailsPage()))
+                        .then((value) {
+                      if (value == "success") {
+                        _resultGetExportTypeWiseBoxesData =
+                            getExportTypeWiseBoxes();
+                      }
+                    });
+                  }),
             ],
-
-          ),),
+          ),
+        ),
         body: Stack(
           children: <Widget>[
-            SizedBox(height: 5,),
-            Padding(child: child, padding: EdgeInsets.only(bottom: bottomNavBarHeight),),
+            SizedBox(
+              height: 5,
+            ),
+            Padding(
+              child: child,
+              padding: EdgeInsets.only(bottom: bottomNavBarHeight),
+            ),
             Align(alignment: Alignment.bottomCenter, child: bottomNav())
           ],
         ),
@@ -991,15 +1330,15 @@ class _DashPageState extends State<DashPage> {
     );
   }
 
-
-
   Widget bottomNav() {
     return CircularBottomNavigation(
       tabItems,
       controller: _navigationController,
       barHeight: bottomNavBarHeight,
       barBackgroundColor: Colors.white,
-      normalIconColor: Colors.grey,circleSize: 70,iconsSize:30,
+      normalIconColor: Colors.grey,
+      circleSize: 70,
+      iconsSize: 30,
       selectedIconColor: Colors.black,
       animationDuration: Duration(milliseconds: 300),
       selectedCallback: (int selectedPos) {
