@@ -331,6 +331,14 @@ class _BoxDetailsPageState extends State<BoxDetailsPage> {
 
                                               debugPrint(
                                                   'Chec ReadOnlyUser $ReadOnlyUser');
+                                              String routeCode =
+                                                  getBoxDetailsDataList[index]
+                                                          ['RouteCode']
+                                                      .toString();
+                                              String boxCode =
+                                                  getBoxDetailsDataList[index]
+                                                          ['BoxNo_value']
+                                                      .toString();
 
                                               if (ReadOnlyUser == "1") {
                                                 String exportTypeValue =
@@ -363,20 +371,20 @@ class _BoxDetailsPageState extends State<BoxDetailsPage> {
                                                 Navigator.push(
                                                     context,
                                                     SlideLeftRoute(
-                                                        page: BoxRouteDetailsReadOnlyPage(
-                                                            exportType_value:
-                                                                exportTypeValue,
-                                                            exportType:
-                                                                exportType,
-                                                            boxNo_Value:
-                                                                boxNoValue,
-                                                            boxNo: boxNo,
-                                                            invoiceNo:
-                                                                invoiceNo,
-                                                            custShortCode:
-                                                                custShortCode,
-                                                            boxCount:
-                                                                boxCount)));
+                                                        page:
+                                                            BoxRouteDetailsReadOnlyPage(
+                                                      exportType_value:
+                                                          exportTypeValue,
+                                                      exportType: exportType,
+                                                      boxNo_Value: boxNoValue,
+                                                      boxNo: boxNo,
+                                                      invoiceNo: invoiceNo,
+                                                      custShortCode:
+                                                          custShortCode,
+                                                      boxCount: boxCount,
+                                                      boxCode: boxCode,
+                                                      routeCode: routeCode,
+                                                    )));
                                               }
                                               if (ReadOnlyUser == "0") {
                                                 String exportTypeValue =
@@ -407,23 +415,22 @@ class _BoxDetailsPageState extends State<BoxDetailsPage> {
                                                     widget.boxCount;
 
                                                 Navigator.push(
-                                                        context,
-                                                        SlideLeftRoute(
-                                                            page: BoxRouteDetailsPage(
-                                                                exportType_value:
-                                                                    exportTypeValue,
-                                                                exportType:
-                                                                    exportType,
-                                                                boxNo_Value:
-                                                                    boxNoValue,
-                                                                boxNo: boxNo,
-                                                                invoiceNo:
-                                                                    invoiceNo,
-                                                                custShortCode:
-                                                                    custShortCode,
-                                                                boxCount:
-                                                                    boxCount)))
-                                                    .then((value) {
+                                                    context,
+                                                    SlideLeftRoute(
+                                                        page:
+                                                            BoxRouteDetailsPage(
+                                                      exportType_value:
+                                                          exportTypeValue,
+                                                      exportType: exportType,
+                                                      boxNo_Value: boxNoValue,
+                                                      boxNo: boxNo,
+                                                      invoiceNo: invoiceNo,
+                                                      custShortCode:
+                                                          custShortCode,
+                                                      boxCount: boxCount,
+                                                      boxCode: boxCode,
+                                                      routeCode: routeCode,
+                                                    ))).then((value) {
                                                   if (value == "success") {
                                                     check();
                                                     _resultGetBoxDetailsData =
