@@ -579,11 +579,11 @@ class _LoginPageState extends State<LoginPage> {
                               debugPrint('devideId : $devideId');
                               debugPrint('token : $token');
 
-                              String APIPath =
-                                  "http://mindtechsolutions.com/tester/EximApi/API";
-
                               // String APIPath =
-                              //     "http://mindtechsolutions.com/tester/EximApiDev/API";
+                              //     "http://mindtechsolutions.com/tester/EximApi/API";
+
+                              String APIPath =
+                                  "http://mindtechsolutions.com/tester/EximApiDev/API";
 
                               SharedPreferences prefs =
                                   await SharedPreferences.getInstance();

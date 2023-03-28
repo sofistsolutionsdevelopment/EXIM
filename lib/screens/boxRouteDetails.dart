@@ -1304,7 +1304,7 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
                                                             ],
                                                           ),
                                                         ),
-                                                        if (getBoxRouteDetailsDataList[
+                                                        /* if (getBoxRouteDetailsDataList[
                                                                     index][
                                                                 "ProcessingTime"] !=
                                                             null)
@@ -1344,7 +1344,7 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
                                                                             .redAccent),
                                                                   ),
                                                                 ),
-                                                              ))
+                                                              )) */
                                                       ],
                                                     ),
                                                   ),
@@ -2552,6 +2552,23 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
                                                                                 FontWeight.w500,
                                                                             color: Colors.black45),
                                                                       ),
+                                                                      if (getBoxRouteDetailsDataList[index]
+                                                                              [
+                                                                              "ProcessingTime"] !=
+                                                                          null)
+                                                                        Container(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width,
+                                                                            decoration: BoxDecoration(color: routePageColor),
+                                                                            child: Padding(
+                                                                              padding: const EdgeInsets.all(5),
+                                                                              child: Center(
+                                                                                child: Text(
+                                                                                  "Processing Timing ${getBoxRouteDetailsDataList[index]["ProcessingTime"].toString()} mins",
+                                                                                  style: TextStyle(fontSize: 13, fontFamily: "Poppins", fontWeight: FontWeight.w500, color: Colors.redAccent),
+                                                                                ),
+                                                                              ),
+                                                                            ))
                                                                     ],
                                                                   ),
                                                                 )),
@@ -2621,8 +2638,8 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
                                                                   padding: const EdgeInsets
                                                                           .only(
                                                                       top: 15,
-                                                                      bottom:
-                                                                          15,
+                                                                      // bottom:
+                                                                      //     15,
                                                                       right: 5,
                                                                       left: 20),
                                                                   child: Column(
@@ -2669,6 +2686,23 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
                                                                                 FontWeight.w500,
                                                                             color: Colors.black45),
                                                                       ),
+                                                                      if (getBoxRouteDetailsDataList[index]
+                                                                              [
+                                                                              "ProcessingTime"] !=
+                                                                          null)
+                                                                        Container(
+                                                                            width:
+                                                                                MediaQuery.of(context).size.width,
+                                                                            decoration: BoxDecoration(color: routePageColor),
+                                                                            child: Padding(
+                                                                              padding: const EdgeInsets.all(5),
+                                                                              child: Center(
+                                                                                child: Text(
+                                                                                  "Processing Timing ${getBoxRouteDetailsDataList[index]["ProcessingTime"].toString()} mins",
+                                                                                  style: TextStyle(fontSize: 13, fontFamily: "Poppins", fontWeight: FontWeight.w500, color: Colors.redAccent),
+                                                                                ),
+                                                                              ),
+                                                                            ))
                                                                     ],
                                                                   ),
                                                                 )),
