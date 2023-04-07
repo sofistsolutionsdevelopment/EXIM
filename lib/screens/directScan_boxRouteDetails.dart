@@ -1221,7 +1221,7 @@ class _DirectScan_BoxRouteDetailsPageState
                                                               SizedBox(
                                                                 width: 100,
                                                               ),
-                                                              Text(
+                                                              /*  Text(
                                                                 //"10:30 AM",
                                                                 getBoxRouteDetailsDataList[
                                                                         index][
@@ -1236,7 +1236,7 @@ class _DirectScan_BoxRouteDetailsPageState
                                                                             .w500,
                                                                     color: Colors
                                                                         .black45),
-                                                              ),
+                                                              ), */
                                                             ],
                                                           ),
                                                           trailing: Row(

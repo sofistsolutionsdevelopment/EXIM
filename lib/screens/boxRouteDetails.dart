@@ -1265,7 +1265,7 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
                                                               SizedBox(
                                                                 width: 100,
                                                               ),
-                                                              Text(
+                                                              /*  Text(
                                                                 //"10:30 AM",
                                                                 getBoxRouteDetailsDataList[
                                                                         index][
@@ -1280,7 +1280,7 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
                                                                             .w500,
                                                                     color: Colors
                                                                         .black45),
-                                                              ),
+                                                              ), */
                                                             ],
                                                           ),
                                                           trailing: Row(
