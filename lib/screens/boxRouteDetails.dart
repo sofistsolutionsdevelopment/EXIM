@@ -1238,7 +1238,7 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
                                                                 color:
                                                                     appColor),
                                                           ),
-                                                          subtitle: Row(
+                                                          /* subtitle: Row(
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
                                                                     .spaceBetween,
@@ -1282,7 +1282,7 @@ class _BoxRouteDetailsPageState extends State<BoxRouteDetailsPage> {
                                                                         .black45),
                                                               ), */
                                                             ],
-                                                          ),
+                                                          ), */
                                                           trailing: Row(
                                                             mainAxisSize:
                                                                 MainAxisSize
