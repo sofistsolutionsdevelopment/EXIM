@@ -1605,7 +1605,7 @@ class _DirectScan_BoxRouteDetailsPageState
                                                                     color:
                                                                         appColor),
                                                               ),
-                                                              subtitle: Row(
+                                                              /*  subtitle: Row(
                                                                 mainAxisAlignment:
                                                                     MainAxisAlignment
                                                                         .spaceBetween,
@@ -1649,7 +1649,7 @@ class _DirectScan_BoxRouteDetailsPageState
                                                                             .black45),
                                                                   ),
                                                                 ],
-                                                              ),
+                                                              ), */
                                                               trailing: Icon(
                                                                 Icons
                                                                     .navigate_next,
